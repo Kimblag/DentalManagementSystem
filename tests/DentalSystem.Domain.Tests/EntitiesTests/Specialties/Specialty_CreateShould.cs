@@ -1,9 +1,8 @@
-﻿using Xunit;
-using DentalSystem.Domain.Entities;
+﻿using DentalSystem.Domain.Entities;
 using DentalSystem.Domain.Enums;
-using DentalSystem.Domain.Exceptions;
+using DentalSystem.Domain.Exceptions.Specialties;
 
-namespace DentalSystem.Domain.Tests.EntitiesTests
+namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 {
     public class Specialty_CreateShould
     {

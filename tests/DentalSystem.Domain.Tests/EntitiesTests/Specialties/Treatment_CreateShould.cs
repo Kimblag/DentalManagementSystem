@@ -1,10 +1,9 @@
-﻿using Xunit;
-
-using DentalSystem.Domain.Entities;
+﻿using DentalSystem.Domain.Entities;
 using DentalSystem.Domain.Enums;
-using DentalSystem.Domain.Exceptions;
+using DentalSystem.Domain.Exceptions.Specialties;
+using DentalSystem.Domain.Tests.Builder;
 
-namespace DentalSystem.Domain.Tests.EntitiesTests
+namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 {
     public class Treatment_CreateShould
     {
@@ -18,7 +17,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests
             decimal treatmentBaseCost = 10.0m;
 
             // Act: Invoke the entity that is being tested
-            Treatment treatment = new Treatment(treatmentName, treatmentBaseCost, treatmentDescription);
+            Treatment treatment = TreatmentBuilder.CreateValid(treatmentName, treatmentBaseCost, treatmentDescription);
 
             // Assert
             // Validate Aggregate member: Treatment
