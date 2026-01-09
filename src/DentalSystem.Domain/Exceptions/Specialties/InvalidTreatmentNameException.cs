@@ -1,4 +1,4 @@
-﻿namespace DentalSystem.Domain.Exceptions
+﻿namespace DentalSystem.Domain.Exceptions.Specialties
 {
     public class InvalidTreatmentNameException : Exception
     {
