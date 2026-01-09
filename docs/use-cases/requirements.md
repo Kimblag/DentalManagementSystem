@@ -96,3 +96,15 @@
 **Output:** Updated Treatment status.  
 **Error Handling / Constraints:** - **Hierarchy Violation:** Reject activation if parent specialty is not `Active`.  
 - **Finality Constraint:** Cannot modify status if treatment is `Archived`.
+
+---
+
+## RF10: List Inactive Treatments of a Specialty
+**Description:** Retrieves all inactive treatments associated with a specific specialty aggregate.  
+**Input:** Specialty ID.  
+**Processing:** - Validate existence of Specialty ID.  
+- Access the internal collection of the specialty aggregate.  
+**Output:** Collection of inactive treatments (ID, Name, Description, BaseCost, Status).  
+**Error Handling / Constraints:** Return "Specialty Not Found" error if ID is invalid.
+
+---
