@@ -40,7 +40,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.UpdateTreatmentDet
                t.TreatmentId.Equals(braces.TreatmentId));
             Assert.Equal(command.TreatmentName, addedTreatment.Name);
             Assert.Equal(command.TreatmentBaseCost, addedTreatment.BaseCost);
-            Assert.Equal(command.TreatmentDescription, addedTreatment.Description);
+            Assert.Equal(command.TreatmentDescription, addedTreatment.Description?.Value);
             Assert.True(repository.SaveWasCalled);
         }
 
@@ -82,7 +82,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.UpdateTreatmentDet
             
             Assert.Equal(oldTreatmentName, addedTreatment.Name);
             Assert.Equal(oldBaseCost, addedTreatment.BaseCost);
-            Assert.Equal(oldDescription, addedTreatment.Description);
+            Assert.Equal(oldDescription, addedTreatment.Description?.Value);
             Assert.False(repository.SaveWasCalled);
         }
 
@@ -124,7 +124,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.UpdateTreatmentDet
 
             Assert.Equal(oldTreatmentName, addedTreatment.Name);
             Assert.Equal(oldBaseCost, addedTreatment.BaseCost);
-            Assert.Equal(oldDescription, addedTreatment.Description);
+            Assert.Equal(oldDescription, addedTreatment.Description?.Value);
             Assert.False(repository.SaveWasCalled);
         }
 
@@ -187,7 +187,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.UpdateTreatmentDet
 
             Assert.Equal(oldTreatmentName, updatedTreatment.Name);
             Assert.Equal(oldTreatmentBaseCost, updatedTreatment.BaseCost);
-            Assert.Equal(oldTreatmentDescription, updatedTreatment.Description);
+            Assert.Equal(oldTreatmentDescription, updatedTreatment.Description?.Value);
             Assert.False(repository.SaveWasCalled);
         }
 

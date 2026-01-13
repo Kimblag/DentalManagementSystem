@@ -15,10 +15,14 @@ namespace DentalSystem.Application.UseCases.Specialties.AddTreatment
             var specialty = await _repository.GetById(command.SpecialtyId)
                ?? throw new SpecialtyNotFoundException();
 
+            Description? description = command.Treatment.Description is null
+                ? null
+                : new Description(command.Treatment.Description);
+
             Treatment newTreatment = new(
                 new Name(command.Treatment.Name), 
-                command.Treatment.BaseCost, 
-                command.Treatment.Description);
+                command.Treatment.BaseCost,
+                description);
 
             // add the new treatment
             specialty.AddTreatment(newTreatment);

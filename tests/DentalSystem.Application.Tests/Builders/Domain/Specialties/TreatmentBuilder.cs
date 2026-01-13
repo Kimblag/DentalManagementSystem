@@ -17,7 +17,7 @@ namespace DentalSystem.Application.Tests.Builders.Domain.Specialties
             return new Treatment(
                 new Name(name ?? DefaultName),
                 cost ?? DefaultCost,
-                description ?? DefaultDescription
+                new Description(description ?? DefaultDescription)
             );
         }
 

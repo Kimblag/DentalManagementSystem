@@ -13,7 +13,7 @@ namespace DentalSystem.Application.Tests.Builders.Domain.Specialties
             return new Specialty(
                 new Name(DefaultName),
                 [TreatmentBuilder.Active()],
-                DefaultDescription
+                new Description(DefaultDescription)
             );
         }
 
@@ -22,7 +22,7 @@ namespace DentalSystem.Application.Tests.Builders.Domain.Specialties
             return new Specialty(
                 new Name(name),
                 [TreatmentBuilder.Active()],
-                DefaultDescription
+                new Description(DefaultDescription)
             );
         }
 
@@ -30,8 +30,8 @@ namespace DentalSystem.Application.Tests.Builders.Domain.Specialties
         {
             return new Specialty(
                 new Name(DefaultName),
-                treatments.ToList(),
-                DefaultDescription
+                [.. treatments],
+                new Description(DefaultDescription)
             );
         }
 

@@ -33,7 +33,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.UpdateDescription
             // Assert
             var storedInFakeSpecialty = await repository.GetById(specialty.SpecialtyId);
             Assert.NotNull(storedInFakeSpecialty);
-            Assert.Equal(newDescription, storedInFakeSpecialty.Description);
+            Assert.Equal(newDescription, storedInFakeSpecialty.Description?.Value);
             Assert.True(repository.SaveWasCalled);
         }
 

@@ -1,5 +1,6 @@
 ﻿using DentalSystem.Application.Exceptions;
 using DentalSystem.Application.Ports.Repositories;
+using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Application.UseCases.Specialties.UpdateTreatmentDetails
 {
@@ -13,9 +14,13 @@ namespace DentalSystem.Application.UseCases.Specialties.UpdateTreatmentDetails
             var specialty = await _repository.GetById(command.SpecialtyId) 
                 ?? throw new SpecialtyNotFoundException();
 
+            Description? treatmentDescription = command.TreatmentDescription is null
+                ? null
+                : new Description(command.TreatmentDescription);
+
             specialty.UpdateTreatmentDetails(command.TreatmentId, 
-                command.TreatmentBaseCost, 
-                command.TreatmentDescription, 
+                command.TreatmentBaseCost,
+                treatmentDescription, 
                 command.TreatmentName
                 );
 

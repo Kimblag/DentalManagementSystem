@@ -1,5 +1,6 @@
 ﻿using DentalSystem.Application.Exceptions;
 using DentalSystem.Application.Ports.Repositories;
+using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Application.UseCases.Specialties.UpdateDescription
 {
@@ -14,7 +15,11 @@ namespace DentalSystem.Application.UseCases.Specialties.UpdateDescription
                 ?? throw new SpecialtyNotFoundException();
 
             // Ask to domain to change the description
-            specialty.UpdateDescription(command.Description);
+            Description? description = command.Description is null
+                ? null
+                : new Description(command.Description);
+
+            specialty.UpdateDescription(description);
 
             // Save it
             await _repository.Save(specialty);
