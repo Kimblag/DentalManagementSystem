@@ -1,6 +1,6 @@
 ﻿namespace DentalSystem.Domain.Exceptions.Specialties
 {
-    public class TreatmentActivationNotAllowedException : Exception
+    public class TreatmentActivationNotAllowedException : DomainException
     {
         public TreatmentActivationNotAllowedException()
         {

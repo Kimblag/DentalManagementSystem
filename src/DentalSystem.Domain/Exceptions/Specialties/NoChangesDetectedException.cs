@@ -1,6 +1,6 @@
 ﻿namespace DentalSystem.Domain.Exceptions.Specialties
 {
-    public class NoChangesDetectedException : Exception
+    public class NoChangesDetectedException : DomainException
     {
         public NoChangesDetectedException()
         {

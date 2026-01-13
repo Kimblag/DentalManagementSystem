@@ -1,6 +1,6 @@
 ﻿namespace DentalSystem.Domain.Exceptions.Specialties
 {
-    public class TreatmentAlreadyInactiveException : Exception
+    public class TreatmentAlreadyInactiveException : DomainException
     {
         public TreatmentAlreadyInactiveException()
         {

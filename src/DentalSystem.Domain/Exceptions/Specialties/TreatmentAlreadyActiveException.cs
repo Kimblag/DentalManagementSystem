@@ -1,6 +1,6 @@
 ﻿namespace DentalSystem.Domain.Exceptions.Specialties
 {
-    public class TreatmentAlreadyActiveException : Exception
+    public class TreatmentAlreadyActiveException : DomainException
     {
         private const string defaultMessage = "The treatment is already active.";
 
@@ -17,7 +17,7 @@
         }
 
 
-        public TreatmentAlreadyActiveException(string message = defaultMessage, Exception inner)
+        public TreatmentAlreadyActiveException(Exception inner, string message = defaultMessage)
             : base(message, inner)
         {
             

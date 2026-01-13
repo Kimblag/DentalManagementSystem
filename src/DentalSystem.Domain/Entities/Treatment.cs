@@ -1,5 +1,6 @@
 ﻿using DentalSystem.Domain.Enums;
 using DentalSystem.Domain.Exceptions.Specialties;
+using DentalSystem.Domain.ValueObjects;
 using System.Text.RegularExpressions;
 
 namespace DentalSystem.Domain.Entities
@@ -11,14 +12,11 @@ namespace DentalSystem.Domain.Entities
 
         // EF persistence Identity
         public int Id { get; private set; }
-        public string Name { get; private set; } = null!;
+        public Name Name { get; private set; } = null!;
         public string Description { get; private set; } = string.Empty;
         public decimal BaseCost { get; private set; } = 0;
         public EntityStatus Status { get; private set; }
 
-
-        [GeneratedRegex("^[a-zA-Z0-9áéíóúñÁÉÍÓÚÑ][a-zA-Z0-9áéíóúñÁÉÍÓÚÑ\\s-]{3,100}[a-zA-Z0-9áéíóúñÁÉÍÓÚÑ]$")]
-        private static partial Regex NamePattern();
 
         [GeneratedRegex("^[\\w\\sáéíóúñÁÉÍÓÚÑ\\.,;:\\-\\(\\)¿?¡!]{3,500}$")]
         private static partial Regex DescriptionPattern();
@@ -28,18 +26,10 @@ namespace DentalSystem.Domain.Entities
             
         }
 
-        public Treatment(string name, decimal baseCost, string? description)
+        public Treatment(Name name, decimal baseCost, string? description)
         {
             // Check name
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new InvalidTreatmentNameException();
-            }
-            name = name.Trim();
-            if (!NamePattern().IsMatch(name))
-            {
-                throw new InvalidTreatmentNameException();
-            }
+            ArgumentNullException.ThrowIfNull(name);
 
 
             // check base cost
@@ -91,26 +81,12 @@ namespace DentalSystem.Domain.Entities
                 throw new InvalidTreatmentStateException();
             }
 
-            if (string.IsNullOrWhiteSpace(correctedName))
-            {
-                throw new InvalidTreatmentNameException();
-            }
-            correctedName = correctedName.Trim();
+            var newName = new Name(correctedName);
 
-            // invalid name
-            if (!NamePattern().IsMatch(correctedName))
-            {
-                throw new InvalidTreatmentNameException();
-            }
-
-            // is identical
-            if (string.Equals(Name, correctedName, StringComparison.OrdinalIgnoreCase))
-            {
+            if (Name.Equals(newName))
                 return;
-            }
 
-            // correct name
-            Name = correctedName;
+            Name = newName;
         }
 
         internal void UpdateDetails(decimal? newBaseCost = null, string? newDescription = null)

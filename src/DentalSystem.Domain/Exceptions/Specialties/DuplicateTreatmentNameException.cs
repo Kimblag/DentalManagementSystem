@@ -1,6 +1,6 @@
 ﻿namespace DentalSystem.Domain.Exceptions.Specialties
 {
-    public class DuplicateTreatmentNameException : Exception
+    public class DuplicateTreatmentNameException : DomainException
     {
 
         public DuplicateTreatmentNameException()

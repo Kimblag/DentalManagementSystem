@@ -1,6 +1,6 @@
 ﻿namespace DentalSystem.Domain.Exceptions.Specialties
 {
-    public class InvalidTreatmentDescriptionException : Exception
+    public class InvalidTreatmentDescriptionException : DomainException
     {
         public InvalidTreatmentDescriptionException()
         {

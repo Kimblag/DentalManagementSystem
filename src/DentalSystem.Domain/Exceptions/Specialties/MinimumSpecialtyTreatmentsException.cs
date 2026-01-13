@@ -1,6 +1,6 @@
 ﻿namespace DentalSystem.Domain.Exceptions.Specialties
 {
-    public class MinimumSpecialtyTreatmentsException : Exception
+    public class MinimumSpecialtyTreatmentsException : DomainException
     {
         public MinimumSpecialtyTreatmentsException()
         {

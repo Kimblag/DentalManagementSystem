@@ -1,6 +1,6 @@
 ﻿namespace DentalSystem.Domain.Exceptions.Specialties
 {
-    public class EmptyTreatmentListException : Exception
+    public class EmptyTreatmentListException : DomainException
     {
         public EmptyTreatmentListException()
         {
