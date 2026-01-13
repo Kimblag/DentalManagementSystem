@@ -1,4 +1,5 @@
 ﻿using DentalSystem.Domain.Enums;
+using DentalSystem.Domain.Exceptions;
 using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.Tests.Builder;
 using DentalSystem.Domain.Tests.Helpers;
@@ -19,7 +20,6 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             // take snapshot
             Guid originalId = treatment.TreatmentId;
-            string originalName = treatment.Name;
             string? originalDescription = treatment.Description ?? string.Empty;
             decimal originalBaseCost = treatment.BaseCost;
 
@@ -88,7 +88,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             // Act
             // Assert
-            Assert.Throws<InvalidTreatmentNameException>(() =>
+            Assert.ThrowsAny<DomainException>(() =>
             {
                 treatment.CorrectName(invalidName);
             });

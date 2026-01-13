@@ -5,11 +5,11 @@ using DentalSystem.Domain.Tests.Builder;
 
 namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 {
-    public class Specialty_RemoveTreatmentShould
+    public class Specialty_DeactivateTreatmentShould
     {
         // Happy path
         [Fact]
-        public void RemoveTreatment_WhenValidIdAndMultipleExist_ShouldSetTreatmentToInactive() 
+        public void DeactivateTreatment_WhenValidIdAndMultipleExist_ShouldSetTreatmentToInactive() 
         {
             // Arrange
             Treatment treatment1 = TreatmentBuilder.CreateValid();
@@ -23,7 +23,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             ]);
 
             // Act
-            specialty.RemoveTreatment(treatment2.TreatmentId);
+            specialty.DeactivateTreatment(treatment2.TreatmentId);
 
             // Assert
             Assert.Equal(EntityStatus.Inactive, treatment2.Status);
@@ -31,7 +31,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
 
         [Fact]
-        public void RemoveTreatment_WhenIsTheLastActiveTreatment_ShouldThrowMinimumSpecialtyTreatmentsException()
+        public void DeactivateTreatment_WhenIsTheLastActiveTreatment_ShouldThrowMinimumSpecialtyTreatmentsException()
         {
             // Arrange
             Treatment treatment1 = TreatmentBuilder.CreateValid();
@@ -45,12 +45,12 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Assert
             Assert.Throws<MinimumSpecialtyTreatmentsException>(() =>
             {
-                specialty.RemoveTreatment(treatment1.TreatmentId);
+                specialty.DeactivateTreatment(treatment1.TreatmentId);
             });
         }
 
         [Fact]
-        public void RemoveTreatment_WhenSpecialtyIsNotActive_ShouldThrowInvalidSpecialtyStateException() 
+        public void DeactivateTreatment_WhenSpecialtyIsNotActive_ShouldThrowInvalidSpecialtyStateException() 
         {
             // Arrange
             Treatment treatment1 = TreatmentBuilder.CreateValid();
@@ -69,13 +69,13 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Assert
             Assert.Throws<InvalidSpecialtyStateException>(() =>
             {
-                specialty.RemoveTreatment(treatment1.TreatmentId);
+                specialty.DeactivateTreatment(treatment1.TreatmentId);
             });
         }
 
 
         [Fact]
-        public void RemoveTreatment_WhenTreatmentIdIsNotFound_ShouldThrowTreatmentNotFoundException() 
+        public void DeactivateTreatment_WhenTreatmentIdIsNotFound_ShouldThrowTreatmentNotFoundException() 
         {
             // Arrange
             Treatment treatment1 = TreatmentBuilder.CreateValid();
@@ -91,13 +91,13 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Assert
             Assert.Throws<TreatmentNotFoundException>(() =>
             {
-                specialty.RemoveTreatment(Guid.NewGuid());
+                specialty.DeactivateTreatment(Guid.NewGuid());
             });
         }
 
 
         [Fact]
-        public void RemoveTreatment_WhenTreatmentIsAlreadyInactive_ShouldThrowTreatmentAlreadyInactiveException()
+        public void DeactivateTreatment_WhenTreatmentIsAlreadyInactive_ShouldThrowTreatmentAlreadyInactiveException()
         {
             // Arrange
             Treatment treatment1 = TreatmentBuilder.CreateValid();
@@ -113,13 +113,13 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
                 inactivetreatment,
             ]);
 
-            specialty.RemoveTreatment(inactivetreatment.TreatmentId);
+            specialty.DeactivateTreatment(inactivetreatment.TreatmentId);
 
             // Act
             // Assert
             Assert.Throws<TreatmentAlreadyInactiveException>(() =>
             {
-                specialty.RemoveTreatment(inactivetreatment.TreatmentId);
+                specialty.DeactivateTreatment(inactivetreatment.TreatmentId);
             });
         }
 

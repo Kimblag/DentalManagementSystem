@@ -35,7 +35,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             Assert.Equal(originalDescription, specialty.Description);
 
             // verify that the treatments are still the same (by ID)
-            Assert.Equal(expectedTreatmentIds, specialty.Treatments.Select(t => t.TreatmentId).ToList());
+            Assert.Equal(expectedTreatmentIds, [.. specialty.Treatments.Select(t => t.TreatmentId)]);
         }
 
 
@@ -51,7 +51,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             EntityStatus originalStatus = specialty.Status;
             string originalDescription = specialty.Description;
             string originalName = specialty.Name;
-            List<Treatment> originalTreatments = specialty.Treatments.ToList();
+            List<Treatment> originalTreatments = [.. specialty.Treatments];
 
             // Act
             // Assert

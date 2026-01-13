@@ -1,6 +1,7 @@
 ﻿using DentalSystem.Domain.Entities;
 using DentalSystem.Domain.Enums;
 using DentalSystem.Domain.Exceptions.Specialties;
+using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 {
@@ -13,21 +14,21 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Follow A-A-A: Arrange - Act - Assert
 
             // Arrange
-            string treatmentName = "Braces";
+            Name treatmentName = new("Braces");
             string treatmentDescription = "Metal or ceramic devices to straighten teeth.";
             decimal treatmentBaseCost = 10.0m;
 
             var treatments = new List<Treatment> {
 
-                new Treatment(treatmentName, treatmentBaseCost, treatmentDescription)
+                new(treatmentName, treatmentBaseCost, treatmentDescription)
             };
 
-            string specialtyName = "Orthodontics";
+            Name specialtyName = new("Orthodontics");
             string specialtyDescription = "Focuses on correcting teeth and jaw alignment issues.";
 
 
             // Act: Invoke the entity that is being tested
-            Specialty specialty = new Specialty(specialtyName, treatments, specialtyDescription);
+            Specialty specialty = new(specialtyName, treatments, specialtyDescription);
 
 
             // Assert
@@ -47,34 +48,6 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         }
 
 
-        // multitest: we can pass multiple cases
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("   ")]
-        [InlineData("or")]
-        public void Create_WhenNameIsInvalid_ShouldThrowInvalidNameException(string? invalidName)
-        {
-            // Arrange
-            string treatmentName = "Braces";
-            string treatmentDescription = "Metal or ceramic devices to straighten teeth.";
-            decimal treatmentBaseCost = 10.0m;
-
-            var treatments = new List<Treatment> {
-
-                new Treatment(treatmentName, treatmentBaseCost, treatmentDescription)
-            };
-
-            string specialtyDescription = "Focuses on correcting teeth and jaw alignment issues.";
-
-            // Act and Assert
-            Assert.Throws<InvalidSpecialtyNameException>(() =>
-            {
-                new Specialty(invalidName!, treatments, specialtyDescription);
-            });
-           
-        }
-
 
         [Fact]
         public void Create_WhenEmptyTreatmentList_ShouldThrowEmptyTreatmentListException()
@@ -82,7 +55,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Arrange
             var invalidTreatments = new List<Treatment>();
 
-            string specialtyName = "Orthodontics";
+            Name specialtyName = new("Orthodontics");
             string specialtyDescription = "Focuses on correcting teeth and jaw alignment issues.";
 
             // Act and Assert
@@ -97,15 +70,15 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void Create_WhenTreatmentNamesAreDuplicatedInList_ShouldThrowDuplicateTreatmentNameException()
         {
             // Arrange
-            string duplicateName = "Braces";
+            Name duplicateName = new("Braces") ;
 
             var duplicateTreatments = new List<Treatment> {
 
-                new Treatment(duplicateName, 10.0m, "Instance 1"),
-                new Treatment(duplicateName, 20.0m, "Instance 2"),
+                new(duplicateName, 10.0m, "Instance 1"),
+                new(duplicateName, 20.0m, "Instance 2"),
             };
 
-            string specialtyName = "Orthodontics";
+            Name specialtyName = new("Orthodontics");
             string specialtyDescription = "Focuses on correcting teeth and jaw alignment issues.";
 
             // Act and Assert

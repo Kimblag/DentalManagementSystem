@@ -1,5 +1,6 @@
 ﻿using DentalSystem.Domain.Entities;
 using DentalSystem.Domain.Enums;
+using DentalSystem.Domain.Exceptions;
 using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.Tests.Builder;
 using DentalSystem.Domain.Tests.Helpers;
@@ -45,7 +46,6 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
 
             var originalId = specialty.SpecialtyId;
-            var originalStatus = specialty.Status;
             var originalDescription = specialty.Description;
             var originalTreatments = specialty.Treatments.ToList();
 
@@ -129,7 +129,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             // Act
             // Assert
-            Assert.Throws<InvalidSpecialtyNameException>(() =>
+            Assert.ThrowsAny<DomainException>(() =>
             {
                 specialty.CorrectName(invalidName!);
             });

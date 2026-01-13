@@ -19,8 +19,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
-            string? originalDescription = treatment.Description ?? string.Empty;
-            decimal originalBaseCost = treatment.BaseCost;
+
 
             decimal newBaseCost = 200;
             string newDescription = "Updated";
@@ -53,8 +52,6 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
-            string? originalDescription = treatment.Description ?? string.Empty;
-            decimal originalBaseCost = treatment.BaseCost;
 
            
             // Act
