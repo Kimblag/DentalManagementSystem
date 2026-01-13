@@ -1,12 +1,10 @@
 ﻿using DentalSystem.Domain.Entities;
+using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Domain.Tests.Builder
 {
     public class SpecialtyBuilder
     {
-        public const string defaultName = "Orthodontics";
-        public const string defaultDescription =
-            "Focuses on correcting teeth and jaw alignment issues.";
 
         public static Specialty CreateActiveWithOneTreatment(
             string? name = null,
@@ -20,7 +18,7 @@ namespace DentalSystem.Domain.Tests.Builder
             return new Specialty(
                 NameBuilder.CreateSpecialtyName(name),
                 treatments,
-                description ?? defaultDescription
+                DescriptionBuilder.CreateSpecialtyDescription(description)
             );
         }
 
@@ -32,7 +30,7 @@ namespace DentalSystem.Domain.Tests.Builder
             return new Specialty(
                 NameBuilder.CreateSpecialtyName(specialtyName),
                 [.. treatments],
-                specialtyDescription ?? defaultDescription
+                DescriptionBuilder.CreateSpecialtyDescription(specialtyDescription)
             );
         }
 

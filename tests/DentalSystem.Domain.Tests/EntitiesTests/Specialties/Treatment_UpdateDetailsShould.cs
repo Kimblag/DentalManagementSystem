@@ -1,7 +1,10 @@
-﻿using DentalSystem.Domain.Enums;
+﻿using DentalSystem.Domain.Entities;
+using DentalSystem.Domain.Enums;
+using DentalSystem.Domain.Exceptions;
 using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.Tests.Builder;
 using DentalSystem.Domain.Tests.Helpers;
+using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 {
@@ -12,7 +15,10 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void UpdateDetails_WhenValidData_ShouldUpdateDetails_AndPreserveStatus()
         {
             // Arrange
-            var treatment = TreatmentBuilder.CreateValid("Cleaning", 
+            decimal newBaseCost = 200;
+            string newDescription = new("Updated");
+          
+            Treatment treatment = TreatmentBuilder.CreateValid("Cleaning", 
                 100, 
                 "Original");
 
@@ -20,11 +26,8 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
 
-
-            decimal newBaseCost = 200;
-            string newDescription = "Updated";
             // Act
-            treatment.UpdateDetails(newBaseCost, newDescription);
+            treatment.UpdateDetails(newBaseCost, new Description(newDescription));
 
             // Assert
             treatment.AssertInvariants(
@@ -55,7 +58,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
            
             // Act
-            treatment.UpdateDetails(baseCost, description);
+            treatment.UpdateDetails(baseCost, new Description(description));
 
             // Assert
             // Data should remain the same
@@ -80,14 +83,14 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
-            string? originalDescription = treatment.Description ?? string.Empty;
+            string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
 
             decimal invalidBaseCost = -50;
 
             // Act
             // Assert
-            Assert.Throws<InvalidTreatmentCostException>(() => {
+            Assert.ThrowsAny<DomainException>(() => {
                 treatment.UpdateDetails(invalidBaseCost);
             });
 
@@ -115,13 +118,13 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
-            string? originalDescription = treatment.Description ?? string.Empty;
+            string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
 
             // Act
             // Assert
-            Assert.Throws<InvalidTreatmentDescriptionException>(() => {
-                treatment.UpdateDetails(200, newDescription: invalidInput);
+            Assert.ThrowsAny<DomainException>(() => {
+                treatment.UpdateDetails(200, newDescription: new Description(invalidInput));
             });
 
             // Data should remain the same

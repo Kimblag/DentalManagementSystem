@@ -14,7 +14,7 @@ namespace DentalSystem.Domain.Entities
         // EF persistence Identity
         public int Id { get; private set; }
         public Name Name { get; private set; } = null!;
-        public string Description { get; private set; } = string.Empty;
+        public Description? Description { get; private set; } = null;
         public EntityStatus Status { get; private set; }
         private readonly List<Treatment> _treatments = [];
 
@@ -26,17 +26,12 @@ namespace DentalSystem.Domain.Entities
         public IReadOnlyCollection<Treatment> Treatments => _treatments.AsReadOnly();
 
 
-
-        [GeneratedRegex("^[\\w\\sáéíóúñÁÉÍÓÚÑ\\.,;:\\-\\(\\)¿?¡!]{3,500}$")]
-        private static partial Regex DescriptionPattern();
-
-
         private Specialty()
         {
             
         }
 
-        public Specialty(Name name, IEnumerable<Treatment> treatments, string? description)
+        public Specialty(Name name, IEnumerable<Treatment> treatments, Description? description)
         {
             // Validate name
             // not null names and match pattern
@@ -48,14 +43,6 @@ namespace DentalSystem.Domain.Entities
                 throw new EmptyTreatmentListException();
             }
 
-            // if description is not null validate
-            if (description is not null)
-            {
-                if (!DescriptionPattern().IsMatch(description))
-                {
-                    throw new InvalidSpecialtyDescriptionException();
-                }
-            }
 
             // Validate treatments uniqueness in the list
             HashSet<string> seenNames = new(StringComparer.OrdinalIgnoreCase);
@@ -71,7 +58,7 @@ namespace DentalSystem.Domain.Entities
             // Create instance
             SpecialtyId = Guid.NewGuid();
             Name = name;
-            Description = description ?? string.Empty;
+            Description = description ?? null;
             _treatments.AddRange(treatments);
             Status = EntityStatus.Active;
         }
@@ -92,7 +79,7 @@ namespace DentalSystem.Domain.Entities
         }
 
 
-        public void UpdateDescription(string? description = null)
+        public void UpdateDescription(Description? description)
         {
             // Specialty is not active
             if (Status != EntityStatus.Active)
@@ -100,17 +87,8 @@ namespace DentalSystem.Domain.Entities
                 throw new InvalidSpecialtyStateException();
             }
 
-            if (!string.IsNullOrEmpty(description))
-            {
-                // description does not match pattern
-                if (!DescriptionPattern().IsMatch(description))
-                {
-                    throw new InvalidSpecialtyDescriptionException();
-                }
-            }
-
             // change or clear
-            Description = !string.IsNullOrEmpty(description) ? description : string.Empty;
+            Description = description ?? null;
         }
 
 
@@ -173,7 +151,7 @@ namespace DentalSystem.Domain.Entities
         public void UpdateTreatmentDetails(
             Guid treatmentId,
             decimal? treatmentBaseCost = null, 
-            string? treatmentDescription = null,
+            Description? treatmentDescription = null,
             string? treatmentName = null)
         {
             if (Status != EntityStatus.Active)

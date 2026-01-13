@@ -15,12 +15,11 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             var treatment = TreatmentBuilder.CreateValid();
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
-            string? originalDescription = treatment.Description ?? string.Empty;
+            string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
 
             // Act
             treatment.Deactivate();
-
 
             // Assert
             treatment.AssertInvariants(
@@ -44,7 +43,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
-            string? originalDescription = treatment.Description ?? string.Empty;
+            string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
 
             // Act 

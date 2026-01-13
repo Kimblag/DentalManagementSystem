@@ -16,7 +16,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             treatment.Deactivate();
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
-            string? originalDescription = treatment.Description ?? string.Empty;
+            string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
 
             // Act
@@ -42,7 +42,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
-            string? originalDescription = treatment.Description ?? string.Empty;
+            string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
 
             // Act

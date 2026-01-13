@@ -33,7 +33,7 @@ namespace DentalSystem.Domain.Tests.Helpers
                 Assert.Equal(expectedName, specialty.Name);
 
             if (expectedDescription != null)
-                Assert.Equal(expectedDescription, specialty.Description);
+                Assert.Equal(expectedDescription, specialty.Description?.Value);
         }
     }
 }

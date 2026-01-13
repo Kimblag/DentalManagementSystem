@@ -5,8 +5,6 @@ namespace DentalSystem.Domain.Tests.Builder
 {
     public static class TreatmentBuilder
     {
-        public const string defaultName = "Braces";
-        public const string defaultDescription = "Metal or ceramic devices to straighten teeth.";
         public const decimal defaultBaseCost = 10.0m;
 
         public static Treatment CreateValid(
@@ -17,7 +15,7 @@ namespace DentalSystem.Domain.Tests.Builder
             return new Treatment(
                 NameBuilder.Create(name),
                 baseCost ?? defaultBaseCost,
-                description ?? defaultDescription
+                DescriptionBuilder.CreateSpecialtyDescription(description)
             );
         }
 

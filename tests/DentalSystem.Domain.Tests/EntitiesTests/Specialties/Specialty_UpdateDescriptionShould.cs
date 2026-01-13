@@ -1,6 +1,8 @@
 ﻿using DentalSystem.Domain.Entities;
+using DentalSystem.Domain.ValueObjects;
 using DentalSystem.Domain.Tests.Builder;
 using DentalSystem.Domain.Exceptions.Specialties;
+using DentalSystem.Domain.Exceptions;
 
 namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 {
@@ -17,11 +19,11 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             Specialty specialty = SpecialtyBuilder.CreateActiveWithTreatments([treatment], specialtyName, "Old description");
 
             // Act
-            specialty.UpdateDescription(newSpecialtyDescription);
+            specialty.UpdateDescription(new Description(newSpecialtyDescription));
 
             // Assert
             Assert.Equal(specialtyName, specialty.Name);
-            Assert.Equal(newSpecialtyDescription, specialty.Description);
+            Assert.Equal(newSpecialtyDescription, specialty.Description?.Value);
         }
 
         [Fact]
@@ -33,11 +35,11 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             Specialty specialty = SpecialtyBuilder.CreateActiveWithTreatments([treatment], specialtyName, "Old description");
 
             // Act
-            specialty.UpdateDescription(string.Empty);
+            specialty.UpdateDescription(null);
 
             // Assert
             Assert.Equal(specialtyName, specialty.Name);
-            Assert.Equal(string.Empty, specialty.Description);
+            Assert.Null(specialty.Description?.Value);
         }
 
 
@@ -51,9 +53,9 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             // Act
             // Assert
-            Assert.Throws<InvalidSpecialtyStateException>(() =>
+            Assert.ThrowsAny<DomainException>(() =>
             {
-                specialty.UpdateDescription("New Description");
+                specialty.UpdateDescription(new Description("New Description"));
             });
         }
 
@@ -63,13 +65,12 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         {
             // Arrange
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
-            string invalidDescription = "1s";
 
             // Act
             // Assert
-            Assert.Throws<InvalidSpecialtyDescriptionException>(() =>
+            Assert.ThrowsAny<DomainException>(() =>
             {
-                specialty.UpdateDescription(invalidDescription);
+                specialty.UpdateDescription(new Description("!!"));
             });
         }
 

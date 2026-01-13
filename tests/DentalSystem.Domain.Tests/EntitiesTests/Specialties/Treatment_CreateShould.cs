@@ -24,7 +24,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Assert
             // Validate Aggregate member: Treatment
             Assert.Equal(treatmentName, treatment.Name);
-            Assert.Equal(treatmentDescription, treatment.Description);
+            Assert.Equal(treatmentDescription, treatment.Description?.Value);
             Assert.Equal(treatmentBaseCost, treatment.BaseCost);
             Assert.Equal(EntityStatus.Active, treatment.Status);
         }
@@ -44,7 +44,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Act and Assert
             Assert.Throws<InvalidTreatmentCostException>(() =>
             {
-                new Treatment(new Name(treatmentName), invalidTreatmentBaseCost, treatmentDescription);
+                new Treatment(new Name(treatmentName), invalidTreatmentBaseCost, new Description(treatmentDescription));
             });
         }
 

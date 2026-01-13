@@ -20,7 +20,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             // take snapshot
             Guid originalId = treatment.TreatmentId;
-            string? originalDescription = treatment.Description ?? string.Empty;
+            string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
 
             string expectedName = "Dental Cleaning";
@@ -50,7 +50,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
-            string? originalDescription = treatment.Description ?? string.Empty;
+            string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
 
             // Act
@@ -83,7 +83,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
-            string? originalDescription = treatment.Description ?? string.Empty;
+            string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
 
             // Act
@@ -115,7 +115,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
-            string? originalDescription = treatment.Description ?? string.Empty;
+            string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
 
             // Act

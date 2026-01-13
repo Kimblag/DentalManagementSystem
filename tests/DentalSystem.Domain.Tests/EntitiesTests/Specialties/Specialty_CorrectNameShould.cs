@@ -19,8 +19,8 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Arrange
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment("Orthdontics");
             var originalId = specialty.SpecialtyId;
-            var originalTreatments = specialty.Treatments.ToList();
-            var originalDescription = specialty.Description;
+            List<Treatment> originalTreatments = [.. specialty.Treatments];
+            string? originalDescription = specialty.Description?.ToString();
 
             string expectedName = "Orthodontics";
 
@@ -42,12 +42,12 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         {
             // Arrange
             string cleanName = "Orthodontics";
-            var specialty = SpecialtyBuilder.CreateActiveWithOneTreatment(cleanName);
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment(cleanName);
 
 
-            var originalId = specialty.SpecialtyId;
-            var originalDescription = specialty.Description;
-            var originalTreatments = specialty.Treatments.ToList();
+            Guid originalId = specialty.SpecialtyId;
+            string? originalDescription = specialty.Description?.ToString();
+            List<Treatment> originalTreatments = [.. specialty.Treatments];
 
             // Act
             specialty.CorrectName(cleanName);
@@ -66,8 +66,8 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void CorrectName_WhenOnlyCaseDiffers_ShouldNotMutate()
         {
             // Arrange
-            var specialty = SpecialtyBuilder.CreateActiveWithOneTreatment("Orthodontics");
-            var originalTreatments = specialty.Treatments.ToList();
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment("Orthodontics");
+            List<Treatment> originalTreatments = [.. specialty.Treatments];
             var originalId = specialty.SpecialtyId;
 
             // Act
@@ -88,14 +88,14 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void CorrectName_WhenSpecialtyIsInactive_ShouldThrowException_AndPreserveState()
         {
             // Arrange
-            var specialty = SpecialtyBuilder.CreateActiveWithOneTreatment("Orthdontics");
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment("Orthdontics");
             specialty.Deactivate();
 
             // take a snapshot of the current state
-            var originalId = specialty.SpecialtyId;
-            var originalTreatments = specialty.Treatments.ToList();
-            var originalName = specialty.Name;
-            var originalDescription = specialty.Description;
+            Guid originalId = specialty.SpecialtyId;
+            List<Treatment> originalTreatments = [.. specialty.Treatments];
+            string originalName = specialty.Name.ToString();
+            string? originalDescription = specialty.Description?.ToString();
 
             // Act
             // Assert
@@ -121,11 +121,11 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         {
             // Arrange
             string originalName = "Orthdontics";
-            var specialty = SpecialtyBuilder.CreateActiveWithOneTreatment(originalName);
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment(originalName);
 
-            var originalId = specialty.SpecialtyId;
-            var originalTreatments = specialty.Treatments.ToList();
-            var originalDescription = specialty.Description;
+            Guid originalId = specialty.SpecialtyId;
+            List<Treatment> originalTreatments = [.. specialty.Treatments];
+            string? originalDescription = specialty.Description?.ToString();
 
             // Act
             // Assert

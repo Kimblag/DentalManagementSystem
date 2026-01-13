@@ -1,4 +1,4 @@
-﻿using DentalSystem.Domain.Exceptions.Specialties;
+﻿using DentalSystem.Domain.Exceptions.ValueObjects;
 using System.Text.RegularExpressions;
 
 namespace DentalSystem.Domain.ValueObjects

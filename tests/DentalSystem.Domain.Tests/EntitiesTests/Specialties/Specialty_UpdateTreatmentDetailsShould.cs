@@ -1,5 +1,6 @@
 using DentalSystem.Domain.Entities;
 using DentalSystem.Domain.Enums;
+using DentalSystem.Domain.ValueObjects;
 using DentalSystem.Domain.Exceptions;
 using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.Tests.Builder;
@@ -33,7 +34,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             specialty.UpdateTreatmentDetails(
                 treatmentId: treatment.TreatmentId,
                 treatmentBaseCost: newCost,
-                treatmentDescription: newDescription,
+                treatmentDescription: new Description(newDescription),
                 treatmentName: newName
             );
 
@@ -42,7 +43,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             Assert.Equal(newName, updatedTreatment.Name);
             Assert.Equal(newCost, updatedTreatment.BaseCost);
-            Assert.Equal(newDescription, updatedTreatment.Description);
+            Assert.Equal(newDescription, updatedTreatment.Description?.Value);
             Assert.Equal(EntityStatus.Active, updatedTreatment.Status);
         }
 
@@ -152,7 +153,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             string originalName = treatment.Name;
             decimal originalCost = treatment.BaseCost;
-            string originalDescription = treatment.Description;
+            string? originalDescription = treatment.Description?.Value;
 
             // Act
             // Assert
@@ -168,7 +169,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             Assert.Equal(originalName, unchanged.Name);
             Assert.Equal(originalCost, unchanged.BaseCost);
-            Assert.Equal(originalDescription, unchanged.Description);
+            Assert.Equal(originalDescription, unchanged.Description?.Value);
         }
     } 
 }
