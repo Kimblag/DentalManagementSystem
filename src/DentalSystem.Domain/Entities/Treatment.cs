@@ -11,7 +11,7 @@ namespace DentalSystem.Domain.Entities
     /// A treatment cannot exist independently of its parent specialty, 
     /// ensuring domain consistency within the clinical scope.
     /// </remarks>
-    public partial class Treatment
+    public class Treatment
     {
         // Domain identity
         public Guid TreatmentId { get; private set; }
