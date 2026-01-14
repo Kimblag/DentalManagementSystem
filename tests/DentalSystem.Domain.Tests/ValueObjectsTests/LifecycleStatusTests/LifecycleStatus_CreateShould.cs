@@ -9,7 +9,7 @@ namespace DentalSystem.Domain.Tests.ValueObjectsTests.LifecycleStatusTests
         public void Create_WhenCalled_ShouldBeActiveByDefault()
         {
             // Act
-            var status = new LifecycleStatus();
+            var status = LifecycleStatus.Active();
 
             // Assert
             Assert.True(status.IsActive);

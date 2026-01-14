@@ -15,7 +15,8 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Arrange
             decimal newBaseCost = 200;
             string newDescription = new("Updated");
-          
+            var expectedStatus = LifecycleStatus.Active();
+
             Treatment treatment = TreatmentBuilder.CreateValid("Cleaning", 
                 100, 
                 "Original");
@@ -23,7 +24,6 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
-            LifecycleStatus originalStatus = treatment.Status;
 
             // Act
             treatment.UpdateDetails(newBaseCost, new Description(newDescription));
@@ -31,11 +31,12 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Assert
             treatment.AssertInvariants(
                originalId,
-               originalStatus,
                newBaseCost,
                originalName,
                newDescription
              );
+
+            Assert.Equal(expectedStatus, treatment.Status);
         }
 
         // Idempotence
@@ -46,6 +47,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Arrange
             decimal baseCost = 100;
             string description = "Same description";
+            var expectedStatus = LifecycleStatus.Active();
 
             var treatment = TreatmentBuilder.CreateValid("Cleaning",
                 baseCost,
@@ -54,7 +56,6 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
-            LifecycleStatus originalStatus = treatment.Status;
 
 
             // Act
@@ -64,11 +65,11 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Data should remain the same
             treatment.AssertInvariants(
                originalId,
-               originalStatus,
                baseCost,
                originalName,
                description
              );
+            Assert.Equal(expectedStatus, treatment.Status);
         }
 
         // Errors
@@ -79,13 +80,13 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             var treatment = TreatmentBuilder.CreateValid("Cleaning",
                 100,
                 "Treatment description");
+            var expectedStatus = LifecycleStatus.Active();
 
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
-            LifecycleStatus originalStatus = treatment.Status;
 
             decimal invalidBaseCost = -50;
 
@@ -98,11 +99,12 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Data should remain the same
             treatment.AssertInvariants(
                originalId,
-               originalStatus,
                originalBaseCost,
                originalName,
                originalDescription
              );
+
+            Assert.Equal(expectedStatus, treatment.Status);
         }
 
 
@@ -115,13 +117,13 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             var treatment = TreatmentBuilder.CreateValid("Cleaning",
                 100,
                 "Original");
+            var expectedStatus = LifecycleStatus.Active();
 
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
-            LifecycleStatus originalStatus = treatment.Status;
 
             // Act
             // Assert
@@ -132,11 +134,11 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Data should remain the same
             treatment.AssertInvariants(
                originalId,
-               originalStatus,
                originalBaseCost,
                originalName,
                originalDescription
              );
+            Assert.Equal(expectedStatus, treatment.Status);
         }
     }
 }

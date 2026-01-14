@@ -13,7 +13,7 @@ namespace DentalSystem.Domain.Entities
         public int Id { get; private set; }
         public Name Name { get; private set; } = null!;
         public Description? Description { get; private set; } = null;
-        public LifecycleStatus Status { get; private set; } = new LifecycleStatus(); // active by default
+        public LifecycleStatus Status { get; private set; } = LifecycleStatus.Active(); // active by default
         private readonly List<Treatment> _treatments = [];
 
         // This '=>' acts like a live mirror.It does not store data itself;
@@ -91,34 +91,20 @@ namespace DentalSystem.Domain.Entities
 
         public void Reactivate()
         {
-            // Is already active
-            if (Status.IsActive)
-            {
-                throw new InvalidStatusTransitionException("The specialty is already active.");
-            }
-
             // reactivate treatments
-            foreach (var treatment in _treatments)
-            {
-                treatment.Reactivate();
-            }
+            _treatments
+                .ForEach(t => t.Reactivate());
 
-            Status.Reactivate();
+            Status = Status.Reactivate();
         }
 
 
         public void Deactivate()
         {
-            // Check current status
-            if (Status.IsInactive)
-            {
-                throw new InvalidStatusTransitionException();
-            }
-
             // Set children to inactive
             _treatments
                 .ForEach(t => t.Deactivate());
-            Status.Deactivate();
+            Status = Status.Deactivate();
         }
 
 

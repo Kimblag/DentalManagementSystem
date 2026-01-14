@@ -13,12 +13,14 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         {
             // Arrange
             var treatment = TreatmentBuilder.CreateValid();
-            treatment.Deactivate();
+            var expectedStatus = LifecycleStatus.Active();
+
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
-            LifecycleStatus originalStatus = treatment.Status;
+
+            treatment.Deactivate();
 
             // Act
             treatment.Reactivate();
@@ -26,11 +28,11 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Assert
             treatment.AssertInvariants(
                originalId,
-               originalStatus,
                originalBaseCost,
                originalName,
                originalDescription
              );
+            Assert.Equal(expectedStatus, treatment.Status);
         }
 
 
@@ -40,27 +42,27 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         {
             // Arrange
             var treatment = TreatmentBuilder.CreateValid();
-            
+            var expectedStatus = LifecycleStatus.Active();
+
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
-            LifecycleStatus originalStatus = treatment.Status;
 
             // Act
             // Assert
-            Assert.Throws<TreatmentAlreadyActiveException>(() =>
+            Assert.Throws<InvalidStatusTransitionException>(() =>
             {
                 treatment.Reactivate();
             });
 
             treatment.AssertInvariants(
              originalId,
-             originalStatus,
              originalBaseCost,
              originalName,
              originalDescription
            );
+            Assert.Equal(expectedStatus, treatment.Status);
         }
     }
 }

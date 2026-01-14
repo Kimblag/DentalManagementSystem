@@ -64,7 +64,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.UpdateDescription
 
 
         [Fact]
-        public async Task Handle_WhenSpecialtyIsInactive_ShouldThrowInvalidSpecialtyStateException_AndNotPersist()
+        public async Task Handle_WhenSpecialtyIsInactive_ShouldThrowInvalidStatusTransitionException_AndNotPersist()
         {
             // Arrange
             string newDescription = "This is a new description";

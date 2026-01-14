@@ -17,12 +17,12 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         {
             // Arrange
             var treatment = TreatmentBuilder.CreateValid("Clean");
+            var expectedStatus = LifecycleStatus.Active();
 
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
-            LifecycleStatus originalStatus = treatment.Status;
 
             string expectedName = "Dental Cleaning";
 
@@ -33,10 +33,10 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             Assert.Equal(expectedName, treatment.Name);
             treatment.AssertInvariants(
               originalId,
-              originalStatus,
               originalBaseCost,
               expectedDescription: originalDescription
             );
+            Assert.Equal(expectedStatus, treatment.Status);
         }
 
 
@@ -46,6 +46,8 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         {
             // Arrange
             var treatment = TreatmentBuilder.CreateValid("Clean");
+            var expectedStatus = LifecycleStatus.Inactive();
+
             treatment.Deactivate();
             
             // take snapshot
@@ -53,7 +55,6 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
-            LifecycleStatus originalStatus = treatment.Status;
 
             // Act
             // Assert
@@ -64,11 +65,11 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             treatment.AssertInvariants(
               originalId,
-              originalStatus,
               originalBaseCost,
               originalName,
               originalDescription
             );
+            Assert.Equal(expectedStatus, treatment.Status);
         }
 
 
@@ -81,13 +82,13 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         {
             // Arrange
             var treatment = TreatmentBuilder.CreateValid("Braces");
+            var expectedStatus = LifecycleStatus.Active();
 
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
-            LifecycleStatus originalStatus = treatment.Status;
 
             // Act
             // Assert
@@ -98,11 +99,11 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             treatment.AssertInvariants(
               originalId,
-              originalStatus,
               originalBaseCost,
               originalName,
               originalDescription
             );
+            Assert.Equal(expectedStatus, treatment.Status);
         }
 
 
@@ -114,13 +115,13 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         {
             // Arrange
             var treatment = TreatmentBuilder.CreateValid("Extraction");
+            var expectedStatus = LifecycleStatus.Active();
 
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
-            LifecycleStatus originalStatus = treatment.Status;
 
             // Act
             treatment.CorrectName(duplicateName);
@@ -129,11 +130,11 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Should remain unchanged
             treatment.AssertInvariants(
              originalId,
-             originalStatus,
              originalBaseCost,
              originalName,
              originalDescription
            );
+            Assert.Equal(expectedStatus, treatment.Status);
         }
     }
 }

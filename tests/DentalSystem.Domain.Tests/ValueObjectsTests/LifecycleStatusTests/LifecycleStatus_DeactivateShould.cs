@@ -9,9 +9,9 @@ namespace DentalSystem.Domain.Tests.ValueObjectsTests.LifecycleStatusTests
         [Fact]
         public void Deactivate_WhenActive_ShouldBecomeInactive()
         {
-            var status = new LifecycleStatus(); // is active by default
+            var status = LifecycleStatus.Active(); // is active by default
 
-            status.Deactivate();
+            status = status.Deactivate();
 
             Assert.True(status.IsInactive);
             Assert.False(status.IsActive);
@@ -20,8 +20,8 @@ namespace DentalSystem.Domain.Tests.ValueObjectsTests.LifecycleStatusTests
         [Fact]
         public void Deactivate_WhenAlreadyInactive_ShouldThrowException()
         {
-            var status = new LifecycleStatus();
-            status.Deactivate();
+            var status = LifecycleStatus.Active();
+            status = status.Deactivate();
 
             Assert.Throws<InvalidStatusTransitionException>(() => status.Deactivate());
         }
