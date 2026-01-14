@@ -1,5 +1,4 @@
 ﻿using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.Enums;
 using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Domain.Tests.Helpers

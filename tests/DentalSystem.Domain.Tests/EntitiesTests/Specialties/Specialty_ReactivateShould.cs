@@ -1,8 +1,8 @@
 ﻿using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.Enums;
 using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.Tests.Builder;
 using DentalSystem.Domain.Tests.Helpers;
+using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 {
@@ -26,7 +26,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             specialty.Reactivate();
 
             // Assert
-            Assert.Equal(EntityStatus.Active, specialty.Status);
+            Assert.True(specialty.Status.IsActive);
             Assert.All(specialty.Treatments, t => Assert.True(t.Status.IsActive));
 
             // check for invariants (what did NOT change)
@@ -48,7 +48,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             // snapshot
             Guid originalId = specialty.SpecialtyId;
-            EntityStatus originalStatus = specialty.Status;
+            LifecycleStatus originalStatus = specialty.Status;
             string? originalDescription = specialty.Description?.Value;
             string originalName = specialty.Name;
             List<Treatment> originalTreatments = [.. specialty.Treatments];
@@ -62,7 +62,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             specialty.AssertInvariants(
               originalId,
-              EntityStatus.Active,
+              originalStatus,
               originalTreatments,
               originalName,
               originalDescription

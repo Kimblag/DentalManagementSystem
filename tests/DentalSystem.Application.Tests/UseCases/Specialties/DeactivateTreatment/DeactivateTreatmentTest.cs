@@ -3,9 +3,7 @@ using DentalSystem.Application.Tests.Builders.Domain.Specialties;
 using DentalSystem.Application.Tests.Fakes.Repositories.Specialties;
 using DentalSystem.Application.UseCases.Specialties.DeactivateTreatment;
 using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.Enums;
 using DentalSystem.Domain.Exceptions;
-using DentalSystem.Domain.Exceptions.Specialties;
 
 namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatment
 {
@@ -31,7 +29,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
 
             // Assert
             var stored = await repository.GetById(specialty.SpecialtyId);
-            Assert.Equal(EntityStatus.Active, stored!.Status);
+            Assert.True(stored!.Status.IsActive);
 
             Assert.Equal(2, stored!.Treatments.Count);
 
@@ -93,7 +91,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
                 await handler.Handle(command);
             });
             var stored = await repository.GetById(specialty.SpecialtyId);
-            Assert.Equal(EntityStatus.Active, stored!.Status);
+            Assert.True(stored!.Status.IsActive);
             Assert.NotNull(stored);
             Assert.True(stored.Treatments.Single(t =>
                  t.TreatmentId == braces.TreatmentId).Status.IsActive);

@@ -1,5 +1,4 @@
 ﻿using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.Enums;
 using DentalSystem.Domain.Exceptions;
 using DentalSystem.Domain.Tests.Builder;
 using DentalSystem.Domain.Tests.Helpers;

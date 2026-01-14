@@ -1,5 +1,5 @@
 ﻿using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.Enums;
+using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Domain.Tests.Helpers
 {
@@ -8,7 +8,7 @@ namespace DentalSystem.Domain.Tests.Helpers
         public static void AssertInvariants(
             this Specialty specialty, // this converts to extension
             Guid expectedId,
-            EntityStatus expectedStatus,
+            LifecycleStatus expectedStatus,
             List<Treatment> originalTreatments,
             string? expectedName = null,
             string? expectedDescription = null)
@@ -17,7 +17,8 @@ namespace DentalSystem.Domain.Tests.Helpers
             Assert.Equal(expectedId, specialty.SpecialtyId);
 
             // Expected status. Depends on the operation applied
-            Assert.Equal(expectedStatus, specialty.Status);
+            Assert.Equal(expectedStatus.IsActive, specialty.Status.IsActive);
+            Assert.Equal(expectedStatus.IsInactive, specialty.Status.IsInactive);
 
             // Collection integrity
             // The same quantity

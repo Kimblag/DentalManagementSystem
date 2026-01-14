@@ -3,7 +3,6 @@ using DentalSystem.Application.Tests.Builders.Domain.Specialties;
 using DentalSystem.Application.Tests.Fakes.Repositories.Specialties;
 using DentalSystem.Application.UseCases.Specialties.AddTreatment;
 using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.Enums;
 using DentalSystem.Domain.Exceptions;
 
 namespace DentalSystem.Application.Tests.UseCases.Specialties.AddTreatment

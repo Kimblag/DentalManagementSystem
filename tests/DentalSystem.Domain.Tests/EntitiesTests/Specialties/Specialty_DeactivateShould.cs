@@ -1,5 +1,4 @@
 ﻿using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.Enums;
 using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.Tests.Builder;
 
@@ -18,7 +17,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             specialty.Deactivate();
 
             //Assert
-            Assert.Equal(EntityStatus.Inactive, specialty.Status);
+            Assert.True(specialty.Status.IsInactive);
 
             Assert.All(specialty.Treatments, t =>
                 Assert.True(t.Status.IsInactive));

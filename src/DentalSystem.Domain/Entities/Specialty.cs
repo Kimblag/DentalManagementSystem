@@ -1,5 +1,4 @@
-﻿using DentalSystem.Domain.Enums;
-using DentalSystem.Domain.Exceptions.Specialties;
+﻿using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Domain.Entities
@@ -14,7 +13,7 @@ namespace DentalSystem.Domain.Entities
         public int Id { get; private set; }
         public Name Name { get; private set; } = null!;
         public Description? Description { get; private set; } = null;
-        public EntityStatus Status { get; private set; }
+        public LifecycleStatus Status { get; private set; } = new LifecycleStatus(); // active by default
         private readonly List<Treatment> _treatments = [];
 
         // This '=>' acts like a live mirror.It does not store data itself;
@@ -59,14 +58,13 @@ namespace DentalSystem.Domain.Entities
             Name = name;
             Description = description ?? null;
             _treatments.AddRange(treatments);
-            Status = EntityStatus.Active;
         }
 
 
         public void CorrectName(string correctedName)
         {
             // If specialty is inactive
-            if (Status == EntityStatus.Inactive)
+            if (Status.IsInactive)
                 throw new InvalidSpecialtyStateException();
 
             var newName = new Name(correctedName);
@@ -81,7 +79,7 @@ namespace DentalSystem.Domain.Entities
         public void UpdateDescription(Description? description)
         {
             // Specialty is not active
-            if (Status != EntityStatus.Active)
+            if (Status.IsInactive)
             {
                 throw new InvalidSpecialtyStateException();
             }
@@ -94,7 +92,7 @@ namespace DentalSystem.Domain.Entities
         public void Reactivate()
         {
             // Is already active
-            if (Status == EntityStatus.Active)
+            if (Status.IsActive)
             {
                 throw new InvalidStatusTransitionException("The specialty is already active.");
             }
@@ -105,14 +103,14 @@ namespace DentalSystem.Domain.Entities
                 treatment.Reactivate();
             }
 
-            Status = EntityStatus.Active;
+            Status.Reactivate();
         }
 
 
         public void Deactivate()
         {
             // Check current status
-            if (Status == EntityStatus.Inactive)
+            if (Status.IsInactive)
             {
                 throw new InvalidStatusTransitionException();
             }
@@ -120,7 +118,7 @@ namespace DentalSystem.Domain.Entities
             // Set children to inactive
             _treatments
                 .ForEach(t => t.Deactivate());
-            Status = EntityStatus.Inactive;
+            Status.Deactivate();
         }
 
 
@@ -131,7 +129,7 @@ namespace DentalSystem.Domain.Entities
 
             // specialty is not active
 
-            if (Status != EntityStatus.Active)
+            if (Status.IsInactive)
             {
                 throw new InvalidSpecialtyStateException();
             }
@@ -153,7 +151,7 @@ namespace DentalSystem.Domain.Entities
             Description? treatmentDescription = null,
             string? treatmentName = null)
         {
-            if (Status != EntityStatus.Active)
+            if (Status.IsInactive)
             {
                 throw new InvalidSpecialtyStateException();
             }
@@ -179,7 +177,7 @@ namespace DentalSystem.Domain.Entities
         public void DeactivateTreatment(Guid treatmentId)
         {
             // When specialty is not active
-            if (Status != EntityStatus.Active)
+            if (Status.IsInactive)
             {
                 throw new InvalidSpecialtyStateException();
             }

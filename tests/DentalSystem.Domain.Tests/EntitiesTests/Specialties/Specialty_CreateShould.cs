@@ -1,5 +1,4 @@
 ﻿using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.Enums;
 using DentalSystem.Domain.Exceptions;
 using DentalSystem.Domain.Tests.Builder;
 using DentalSystem.Domain.ValueObjects;
@@ -30,7 +29,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Validate Aggregate: Specialty
             Assert.Equal(specialtyName, specialty.Name);
             Assert.Equal(specialtyDescription, specialty.Description?.Value);
-            Assert.Equal(EntityStatus.Active, specialty.Status);
+            Assert.True(specialty.Status.IsActive);
             Assert.Single(specialty.Treatments);
 
             // Validate Aggregate member: Treatment

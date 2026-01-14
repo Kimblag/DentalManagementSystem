@@ -1,9 +1,9 @@
 ﻿using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.Enums;
 using DentalSystem.Domain.Exceptions;
 using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.Tests.Builder;
 using DentalSystem.Domain.Tests.Helpers;
+using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 {
@@ -21,6 +21,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             var originalId = specialty.SpecialtyId;
             List<Treatment> originalTreatments = [.. specialty.Treatments];
             string? originalDescription = specialty.Description?.ToString();
+            LifecycleStatus originalStatus = specialty.Status;
 
             string expectedName = "Orthodontics";
 
@@ -31,7 +32,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             Assert.Equal(expectedName, specialty.Name);
             specialty.AssertInvariants(
                  originalId,
-                 EntityStatus.Active,
+                 originalStatus,
                  originalTreatments,
                  expectedDescription: originalDescription);
         }
@@ -44,10 +45,11 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             string cleanName = "Orthodontics";
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment(cleanName);
 
-
+            // snapshot
             Guid originalId = specialty.SpecialtyId;
             string? originalDescription = specialty.Description?.ToString();
             List<Treatment> originalTreatments = [.. specialty.Treatments];
+            LifecycleStatus originalStatus = specialty.Status;
 
             // Act
             specialty.CorrectName(cleanName);
@@ -55,7 +57,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Assert
             specialty.AssertInvariants(
                   originalId,
-                  EntityStatus.Active,
+                  originalStatus,
                   originalTreatments,
                   expectedName: cleanName,
                   expectedDescription: originalDescription);
@@ -69,6 +71,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment("Orthodontics");
             List<Treatment> originalTreatments = [.. specialty.Treatments];
             var originalId = specialty.SpecialtyId;
+            LifecycleStatus originalStatus = specialty.Status;
 
             // Act
             specialty.CorrectName("orthodontics");
@@ -76,7 +79,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Assert
             specialty.AssertInvariants(
                  originalId,
-                 EntityStatus.Active,
+                 originalStatus,
                  originalTreatments,
                  expectedName: "Orthodontics");
         }
@@ -96,6 +99,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             List<Treatment> originalTreatments = [.. specialty.Treatments];
             string originalName = specialty.Name.ToString();
             string? originalDescription = specialty.Description?.ToString();
+            LifecycleStatus originalStatus = specialty.Status;
 
             // Act
             // Assert
@@ -106,7 +110,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             specialty.AssertInvariants(
                  originalId,
-                 EntityStatus.Inactive,
+                 originalStatus,
                  originalTreatments,
                  expectedName: originalName,
                  expectedDescription: originalDescription);
@@ -126,6 +130,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             Guid originalId = specialty.SpecialtyId;
             List<Treatment> originalTreatments = [.. specialty.Treatments];
             string? originalDescription = specialty.Description?.ToString();
+            LifecycleStatus originalStatus = specialty.Status;
 
             // Act
             // Assert
@@ -136,7 +141,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             specialty.AssertInvariants(
                 originalId,
-                EntityStatus.Active,
+                originalStatus,
                 originalTreatments,
                 expectedName: originalName,
                 expectedDescription: originalDescription);

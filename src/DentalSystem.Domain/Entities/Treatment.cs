@@ -1,5 +1,4 @@
-﻿using DentalSystem.Domain.Enums;
-using DentalSystem.Domain.Exceptions.Specialties;
+﻿using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Domain.Entities
