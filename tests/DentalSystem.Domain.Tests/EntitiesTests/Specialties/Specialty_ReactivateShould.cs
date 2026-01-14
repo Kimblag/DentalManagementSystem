@@ -27,7 +27,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             // Assert
             Assert.Equal(EntityStatus.Active, specialty.Status);
-            Assert.All(specialty.Treatments, t => Assert.Equal(EntityStatus.Active, t.Status));
+            Assert.All(specialty.Treatments, t => Assert.True(t.Status.IsActive));
 
             // check for invariants (what did NOT change)
             Assert.Equal(originalId, specialty.SpecialtyId);

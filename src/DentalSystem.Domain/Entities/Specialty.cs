@@ -1,7 +1,6 @@
 ﻿using DentalSystem.Domain.Enums;
 using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.ValueObjects;
-using System.Text.RegularExpressions;
 
 namespace DentalSystem.Domain.Entities
 {
@@ -166,7 +165,7 @@ namespace DentalSystem.Domain.Entities
                    $"Treatment with ID {treatmentId} was not found in this specialty.");
 
             // When treatment is inactive
-            if (foundTreatment.Status != EntityStatus.Active)
+            if (foundTreatment.Status.IsInactive)
             {
                 throw new InvalidTreatmentStateException();
             }
@@ -192,13 +191,13 @@ namespace DentalSystem.Domain.Entities
                    $"Treatment with ID {treatmentId} was not found in this specialty.");
 
             // When treatment is already inactive
-            if (foundTreatment.Status != EntityStatus.Active)
+            if (foundTreatment.Status.IsInactive)
             {
                 throw new TreatmentAlreadyInactiveException();
             }
 
             // When is the last active treatment
-            if (_treatments.Count(t => t.Status == EntityStatus.Active) == 1)
+            if (_treatments.Count(t => t.Status.IsActive) == 1)
             {
                 throw new MinimumSpecialtyTreatmentsException("A specialty can't have less than one treatment.");
             }

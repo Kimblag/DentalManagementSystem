@@ -1,7 +1,6 @@
 ﻿using DentalSystem.Domain.Entities;
 using DentalSystem.Domain.Enums;
 using DentalSystem.Domain.Exceptions;
-using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.Tests.Builder;
 using DentalSystem.Domain.Tests.Helpers;
 using DentalSystem.Domain.ValueObjects;
@@ -25,6 +24,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
+            LifecycleStatus originalStatus = treatment.Status;
 
             // Act
             treatment.UpdateDetails(newBaseCost, new Description(newDescription));
@@ -32,7 +32,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Assert
             treatment.AssertInvariants(
                originalId,
-               EntityStatus.Active,
+               originalStatus,
                newBaseCost,
                originalName,
                newDescription
@@ -55,8 +55,9 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // take snapshot
             Guid originalId = treatment.TreatmentId;
             string originalName = treatment.Name;
+            LifecycleStatus originalStatus = treatment.Status;
 
-           
+
             // Act
             treatment.UpdateDetails(baseCost, new Description(description));
 
@@ -64,7 +65,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Data should remain the same
             treatment.AssertInvariants(
                originalId,
-               EntityStatus.Active,
+               originalStatus,
                baseCost,
                originalName,
                description
@@ -85,6 +86,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
+            LifecycleStatus originalStatus = treatment.Status;
 
             decimal invalidBaseCost = -50;
 
@@ -97,7 +99,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Data should remain the same
             treatment.AssertInvariants(
                originalId,
-               EntityStatus.Active,
+               originalStatus,
                originalBaseCost,
                originalName,
                originalDescription
@@ -120,6 +122,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
+            LifecycleStatus originalStatus = treatment.Status;
 
             // Act
             // Assert
@@ -130,7 +133,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Data should remain the same
             treatment.AssertInvariants(
                originalId,
-               EntityStatus.Active,
+               originalStatus,
                originalBaseCost,
                originalName,
                originalDescription

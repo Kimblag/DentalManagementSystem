@@ -3,6 +3,7 @@ using DentalSystem.Domain.Exceptions;
 using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.Tests.Builder;
 using DentalSystem.Domain.Tests.Helpers;
+using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 {
@@ -22,6 +23,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             Guid originalId = treatment.TreatmentId;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
+            LifecycleStatus originalStatus = treatment.Status;
 
             string expectedName = "Dental Cleaning";
 
@@ -32,7 +34,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             Assert.Equal(expectedName, treatment.Name);
             treatment.AssertInvariants(
               originalId,
-              EntityStatus.Active,
+              originalStatus,
               originalBaseCost,
               expectedDescription: originalDescription
             );
@@ -52,6 +54,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
+            LifecycleStatus originalStatus = treatment.Status;
 
             // Act
             // Assert
@@ -62,7 +65,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             treatment.AssertInvariants(
               originalId,
-              EntityStatus.Inactive,
+              originalStatus,
               originalBaseCost,
               originalName,
               originalDescription
@@ -85,6 +88,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
+            LifecycleStatus originalStatus = treatment.Status;
 
             // Act
             // Assert
@@ -95,7 +99,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             treatment.AssertInvariants(
               originalId,
-              EntityStatus.Active,
+              originalStatus,
               originalBaseCost,
               originalName,
               originalDescription
@@ -117,6 +121,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
+            LifecycleStatus originalStatus = treatment.Status;
 
             // Act
             treatment.CorrectName(duplicateName);
@@ -125,7 +130,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Should remain unchanged
             treatment.AssertInvariants(
              originalId,
-             EntityStatus.Active,
+             originalStatus,
              originalBaseCost,
              originalName,
              originalDescription

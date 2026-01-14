@@ -34,7 +34,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.Reactivate
             // All treatments should be inactive
             Assert.All(
                    storedInFakeSpecialty.Treatments,
-                   t => Assert.Equal(EntityStatus.Active, t.Status)
+                   t => Assert.True(t.Status.IsActive)
                );
             // IT must be persisted
             Assert.True(repository.SaveWasCalled);

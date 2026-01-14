@@ -26,7 +26,8 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             Assert.Equal(treatmentName, treatment.Name);
             Assert.Equal(treatmentDescription, treatment.Description?.Value);
             Assert.Equal(treatmentBaseCost, treatment.BaseCost);
-            Assert.Equal(EntityStatus.Active, treatment.Status);
+            Assert.True(treatment.Status.IsActive);
+            Assert.False(treatment.Status.IsInactive);
         }
 
 

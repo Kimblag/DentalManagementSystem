@@ -37,7 +37,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.AddTreatment
             var addedTreatment = stored.Treatments.First(t =>
                 t.Name.Value == newTreatmentName);
 
-            Assert.Equal(EntityStatus.Active, addedTreatment.Status);
+            Assert.True(addedTreatment.Status.IsActive);
             // IT must be persisted
             Assert.True(repository.SaveWasCalled);
         }

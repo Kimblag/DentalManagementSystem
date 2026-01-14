@@ -1,9 +1,4 @@
 ﻿using DentalSystem.Domain.Exceptions.Specialties;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DentalSystem.Domain.ValueObjects
 {
@@ -19,7 +14,7 @@ namespace DentalSystem.Domain.ValueObjects
         }
 
 
-        public void Deactivate()
+        internal void Deactivate()
         {
             if (!IsActive)
                 throw new InvalidStatusTransitionException("The entity is already inactive.");
@@ -27,7 +22,7 @@ namespace DentalSystem.Domain.ValueObjects
             IsActive = false;
         }
 
-        public void Reactivate()
+        internal void Reactivate()
         {
             if (IsActive)
                 throw new InvalidStatusTransitionException("The entity is already active.");
@@ -38,9 +33,11 @@ namespace DentalSystem.Domain.ValueObjects
         // Equity by value
         public override bool Equals(object? obj)
         {
-            return obj is LifecycleStatus other && IsActive == other.IsActive;
+            return obj is LifecycleStatus other
+                && IsActive == other.IsActive
+                && IsInactive == other.IsInactive;
         }
 
-        public override int GetHashCode() => IsActive.GetHashCode();
+        public override int GetHashCode() => HashCode.Combine(IsActive, IsInactive);
     }
 }

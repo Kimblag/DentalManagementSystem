@@ -2,6 +2,7 @@
 using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.Tests.Builder;
 using DentalSystem.Domain.Tests.Helpers;
+using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 {
@@ -17,6 +18,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
+            LifecycleStatus originalStatus = treatment.Status;
 
             // Act
             treatment.Deactivate();
@@ -24,7 +26,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Assert
             treatment.AssertInvariants(
                 originalId,
-                EntityStatus.Inactive,
+                originalStatus,
                 originalBaseCost,
                 originalName,
                 originalDescription
@@ -45,6 +47,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             string originalName = treatment.Name;
             string? originalDescription = treatment.Description?.Value;
             decimal originalBaseCost = treatment.BaseCost;
+            LifecycleStatus originalStatus = treatment.Status;
 
             // Act 
             // Assert
@@ -55,7 +58,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             
             treatment.AssertInvariants(
                originalId,
-               EntityStatus.Inactive,
+               originalStatus,
                originalBaseCost,
                originalName,
                originalDescription

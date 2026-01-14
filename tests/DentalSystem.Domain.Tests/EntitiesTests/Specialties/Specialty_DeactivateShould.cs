@@ -21,7 +21,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             Assert.Equal(EntityStatus.Inactive, specialty.Status);
 
             Assert.All(specialty.Treatments, t =>
-                Assert.Equal(EntityStatus.Inactive, t.Status));
+                Assert.True(t.Status.IsInactive));
         }
 
 

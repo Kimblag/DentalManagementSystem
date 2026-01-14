@@ -35,11 +35,11 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
 
             Assert.Equal(2, stored!.Treatments.Count);
 
-            Assert.Equal(EntityStatus.Active, stored.Treatments.Single(t => 
-            t.TreatmentId == braces.TreatmentId).Status);
+            Assert.True(stored.Treatments.Single(t => 
+            t.TreatmentId == braces.TreatmentId).Status.IsActive);
 
-            Assert.Equal(EntityStatus.Inactive, stored.Treatments.Single(t => 
-            t.TreatmentId == aligners.TreatmentId).Status);
+            Assert.True(stored.Treatments.Single(t => 
+            t.TreatmentId == aligners.TreatmentId).Status.IsInactive);
 
             Assert.True(repository.SaveWasCalled);
         }
@@ -95,8 +95,8 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
             var stored = await repository.GetById(specialty.SpecialtyId);
             Assert.Equal(EntityStatus.Active, stored!.Status);
             Assert.NotNull(stored);
-            Assert.Equal(EntityStatus.Active, stored.Treatments.Single(t =>
-                 t.TreatmentId == braces.TreatmentId).Status);
+            Assert.True(stored.Treatments.Single(t =>
+                 t.TreatmentId == braces.TreatmentId).Status.IsActive);
             Assert.False(repository.SaveWasCalled);
         }
     }

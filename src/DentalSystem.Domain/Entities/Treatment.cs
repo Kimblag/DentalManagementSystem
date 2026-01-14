@@ -1,7 +1,6 @@
 ﻿using DentalSystem.Domain.Enums;
 using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.ValueObjects;
-using System.Text.RegularExpressions;
 
 namespace DentalSystem.Domain.Entities
 {
@@ -15,7 +14,7 @@ namespace DentalSystem.Domain.Entities
         public Name Name { get; private set; } = null!;
         public Description? Description { get; private set; } = null;
         public decimal BaseCost { get; private set; } = 0;
-        public EntityStatus Status { get; private set; }
+        public LifecycleStatus Status { get; private set; } = new LifecycleStatus();
 
 
         private Treatment()
@@ -40,31 +39,30 @@ namespace DentalSystem.Domain.Entities
             Name = name;
             Description = description ?? null;
             BaseCost = baseCost;
-            Status = EntityStatus.Active;
         }
 
         internal void Deactivate()
         {
-            if (Status == EntityStatus.Inactive)
+            if (Status.IsInactive)
                 throw new TreatmentAlreadyInactiveException();
 
-            Status = EntityStatus.Inactive;
+            Status.Deactivate();
         }
 
 
         internal void Reactivate()
         {
-            if (Status == EntityStatus.Active)
+            if (Status.IsActive)
             {
                 throw new TreatmentAlreadyActiveException();
             }
-            Status = EntityStatus.Active;
+            Status.Reactivate();
         }
 
         internal void CorrectName(string correctedName)
         {
             // is inactive
-            if (Status == EntityStatus.Inactive)
+            if (Status.IsInactive)
             {
                 throw new InvalidTreatmentStateException();
             }

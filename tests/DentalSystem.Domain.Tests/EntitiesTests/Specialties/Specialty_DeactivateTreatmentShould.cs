@@ -26,7 +26,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             specialty.DeactivateTreatment(treatment2.TreatmentId);
 
             // Assert
-            Assert.Equal(EntityStatus.Inactive, treatment2.Status);
+            Assert.True(treatment2.Status.IsInactive);
         }
 
 
