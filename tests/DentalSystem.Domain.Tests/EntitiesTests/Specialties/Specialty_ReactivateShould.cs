@@ -45,10 +45,10 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         {
             // Arrange
             var specialty = SpecialtyBuilder.CreateActiveWithMultipleTreatments();
+            var expectedStatus = LifecycleStatus.Active();
 
             // snapshot
             Guid originalId = specialty.SpecialtyId;
-            LifecycleStatus originalStatus = specialty.Status;
             string? originalDescription = specialty.Description?.Value;
             string originalName = specialty.Name;
             List<Treatment> originalTreatments = [.. specialty.Treatments];
@@ -62,11 +62,11 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             specialty.AssertInvariants(
               originalId,
-              originalStatus,
               originalTreatments,
               originalName,
               originalDescription
               );
+            Assert.Equal(expectedStatus, specialty.Status);
 
         }
 

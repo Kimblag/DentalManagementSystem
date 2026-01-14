@@ -9,41 +9,35 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
     {
         // Happy path
         [Fact]
-        public void Create_WhenDataIsValid_ShouldCreateSpecialtySuccessfully()
+        public void Create_WhenDataIsValid_ShouldCreateActiveSpecialtyWithTreatments()
         {
             // Follow A-A-A: Arrange - Act - Assert
 
             // Arrange
             string specialtyName = "Orthodontics";
             string specialtyDescription = "Focuses on correcting teeth and jaw alignment issues.";
-            string treatmentName = "Braces";
-            decimal treatmentBaseCost = 10.0m;
-            string treatmentDescription = "Metal or ceramic devices to straighten teeth.";
 
-            Treatment braces = TreatmentBuilder.CreateValid(treatmentName, treatmentBaseCost, treatmentDescription);
+            Treatment braces = TreatmentBuilder.CreateValid();
 
-            // Act: Invoke the entity that is being tested
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithTreatments([braces], specialtyName, specialtyDescription);
+            // Act
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithTreatments(
+                [braces],
+                specialtyName,
+                specialtyDescription);
 
             // Assert
-            // Validate Aggregate: Specialty
             Assert.Equal(specialtyName, specialty.Name);
             Assert.Equal(specialtyDescription, specialty.Description?.Value);
             Assert.True(specialty.Status.IsActive);
-            Assert.Single(specialty.Treatments);
 
-            // Validate Aggregate member: Treatment
-            Treatment createdTreatment = specialty.Treatments.First();
-            Assert.Equal(treatmentName, createdTreatment.Name);
-            Assert.Equal(treatmentDescription, createdTreatment.Description?.Value);
-            Assert.Equal(treatmentBaseCost, createdTreatment.BaseCost);
-            Assert.True(createdTreatment.Status.IsActive);
+            Assert.Single(specialty.Treatments);
+            Assert.Contains(braces, specialty.Treatments);
         }
 
 
 
         [Fact]
-        public void Create_WhenEmptyTreatmentList_ShouldThrowEmptyTreatmentListException()
+        public void Create_WhenTreatmentListIsEmpty_ShouldThrowDomainException()
         {
             // Arrange
             Name specialtyName = new("Orthodontics");
@@ -59,7 +53,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         
 
         [Fact]
-        public void Create_WhenTreatmentNamesAreDuplicatedInList_ShouldThrowDuplicateTreatmentNameException()
+        public void Create_WhenTreatmentNamesAreDuplicated_ShouldThrowDomainException()
         {
             // Arrange
             string duplicateName = "Braces";

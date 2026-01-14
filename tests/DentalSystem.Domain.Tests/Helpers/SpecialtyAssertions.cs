@@ -8,17 +8,12 @@ namespace DentalSystem.Domain.Tests.Helpers
         public static void AssertInvariants(
             this Specialty specialty, // this converts to extension
             Guid expectedId,
-            LifecycleStatus expectedStatus,
             List<Treatment> originalTreatments,
             string? expectedName = null,
             string? expectedDescription = null)
         {
             // Identity should never change
             Assert.Equal(expectedId, specialty.SpecialtyId);
-
-            // Expected status. Depends on the operation applied
-            Assert.Equal(expectedStatus.IsActive, specialty.Status.IsActive);
-            Assert.Equal(expectedStatus.IsInactive, specialty.Status.IsInactive);
 
             // Collection integrity
             // The same quantity

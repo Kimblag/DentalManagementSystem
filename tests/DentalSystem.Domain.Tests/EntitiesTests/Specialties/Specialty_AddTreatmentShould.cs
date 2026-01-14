@@ -30,7 +30,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         [InlineData("Braces ")]
         [InlineData(" Braces")]
         [InlineData(" Braces ")]
-        public void AddTreatment_WhenNameAlreadyExists_ShouldThrowDuplicateTreatmentNameException(string duplicateTreatmentName)
+        public void AddTreatment_WhenTreatmentNameIsEquivalent_ShouldThrowDuplicateTreatmentNameException(string duplicateTreatmentName)
         {
             // Arrange
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
@@ -46,7 +46,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
 
         [Fact]
-        public void AddTreatment_WhenSpecialtyIsNotActive_ShouldThrowInvalidSpecialtyStateException()
+        public void AddTreatment_WhenSpecialtyIsInactive_ShouldThrowInvalidSpecialtyStateException()
         {
             // Arrange
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
