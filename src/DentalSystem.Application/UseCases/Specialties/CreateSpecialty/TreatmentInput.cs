@@ -1,4 +1,4 @@
-﻿namespace DentalSystem.Application.UseCases.Specialties.AddTreatment
+﻿namespace DentalSystem.Application.UseCases.Specialties.CreateSpecialty
 {
     public sealed class TreatmentInput
     {
@@ -13,5 +13,4 @@
             Description = description;
         }
     }
-
 }

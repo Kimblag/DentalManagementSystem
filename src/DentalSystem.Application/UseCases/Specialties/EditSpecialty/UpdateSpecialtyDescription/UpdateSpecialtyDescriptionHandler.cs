@@ -2,31 +2,27 @@
 using DentalSystem.Application.Ports.Persistence;
 using DentalSystem.Application.Ports.Repositories;
 
-namespace DentalSystem.Application.UseCases.Specialties.AddTreatment
+namespace DentalSystem.Application.UseCases.Specialties.EditSpecialty.UpdateSpecialtyDescription
 {
-    public sealed class AddTreatmentHandler(ISpecialtyRepository repository,
-        IUnitOfWork unitOfWork)
+    public sealed class UpdateSpecialtyDescriptionHandler(ISpecialtyRepository repository, IUnitOfWork unitOfWork)
     {
         private readonly ISpecialtyRepository _repository = repository;
-        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork; 
 
-        public async Task Handle(AddTreatmentCommand command, CancellationToken cancellationToken)
+        public async Task Handle(UpdateSpecialtyDescriptionCommand command, CancellationToken cancellationToken)
         {
             var specialty = await _repository.GetById(command.SpecialtyId, cancellationToken)
                 ?? throw new SpecialtyNotFoundException();
 
-            specialty.AddTreatment(
-                command.Treatment.Name,
-                command.Treatment.BaseCost,
-                command.Treatment.Description
-            );
+            specialty.UpdateDescription(command.Description);
 
             await _repository.Save(specialty, cancellationToken);
-            
+
             if (_unitOfWork.HasChanges())
             {
                 _unitOfWork.Commit();
             }
         }
+
     }
 }
