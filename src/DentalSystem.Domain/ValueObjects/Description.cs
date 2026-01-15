@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace DentalSystem.Domain.ValueObjects
 {
     /// <summary>
-    /// Represents an optional detailed explanation or clinical notes for a treatment.
+    /// Represents an detailed explanation or clinical notes for a treatment.
     /// </summary>
     /// <remarks>
     /// If provided, the description must be between 3 and 500 characters and can include 
@@ -13,7 +13,7 @@ namespace DentalSystem.Domain.ValueObjects
     /// </remarks>
     public sealed partial class Description
     {
-        public string? Value { get; }
+        public string Value { get; }
 
         [GeneratedRegex("^[\\w\\sáéíóúñÁÉÍÓÚÑ\\.,;:\\-\\(\\)¿?¡!]{3,500}$")]
         private static partial Regex Pattern();
@@ -27,25 +27,25 @@ namespace DentalSystem.Domain.ValueObjects
         /// Thrown when the provided text contains invalid characters or does not meet 
         /// the length requirements (3-500 characters).
         /// </exception>
-        public Description(string? value)
+        public Description(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-            {
-                Value = null;
-                return;
-            }
+                throw new InvalidDescriptionException("Description cannot be empty.");
+
+            value = value.Trim();
 
             if (!Pattern().IsMatch(value))
-                throw new InvalidDescriptionException("Description contains invalid characters or has an invalid length.");
+                throw new InvalidDescriptionException("Invalid description format.");
 
-            Value = value.Trim();
+            Value = value;
         }
 
+        public override string ToString() => Value;
 
-        /// <summary>
-        /// Returns the description value or an empty string if it is null.
-        /// </summary>
-        /// <returns>A string representation of the description.</returns>
-        public override string ToString() => Value ?? string.Empty;
+        public override bool Equals(object? obj)
+            => obj is Description other && Value == other.Value;
+
+        public override int GetHashCode()
+            => Value.GetHashCode();
     }
 }

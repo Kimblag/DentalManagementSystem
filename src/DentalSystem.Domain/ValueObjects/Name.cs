@@ -20,15 +20,6 @@ namespace DentalSystem.Domain.ValueObjects
             RegexOptions.Compiled)]
         private static partial Regex NamePattern();
 
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Name"/> value object.
-        /// </summary>
-        /// <param name="value">The string value to validate and encapsulate.</param>
-        /// <exception cref="InvalidNameException">
-        /// Thrown when the value is null, empty, or does not match the required 
-        /// alphanumeric pattern and length (3-100 characters plus boundaries).
-        /// </exception>
         public Name(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -75,11 +66,6 @@ namespace DentalSystem.Domain.ValueObjects
         /// <returns>The string representation of the name.</returns>
         public override string ToString() => Value;
 
-        /// <summary>
-        /// Defines an implicit conversion of a <see cref="Name"/> to a <see cref="string"/>.
-        /// </summary>
-        /// <param name="name">The name object to convert.</param>
-        public static implicit operator string(Name name) => name.Value;
 
     }
 }

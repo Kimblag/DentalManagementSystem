@@ -9,7 +9,7 @@ namespace DentalSystem.Domain.ValueObjects
     /// Instances are created through static factory methods. State transitions return 
     /// a new instance, ensuring the value object remains immutable.
     /// </remarks>
-    public sealed class LifecycleStatus
+    public sealed class LifecycleStatus : IEquatable<LifecycleStatus>
     {
         public bool IsActive { get; }
         public bool IsInactive => !IsActive;
