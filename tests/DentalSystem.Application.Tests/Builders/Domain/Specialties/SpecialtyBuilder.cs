@@ -1,43 +1,74 @@
 ﻿using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Application.Tests.Builders.Domain.Specialties
 {
     public static class SpecialtyBuilder
     {
-        public const string DefaultName = "Orthodontics";
-        public const string DefaultDescription = "Specialty description";
+        private const string DefaultSpecialtyName = "Orthodontics";
+        private const string DefaultSpecialtyDescription = "Description of a specialty";
 
-        public static Specialty ActiveWithOneTreatment()
+        private const string DefaultTreatmentName = "Braces";
+        private const decimal DefaultTreatmentCost = 10.0m;
+        private const string DefaultTreatmentDescription = "Description of a treatment";
+
+        public static Specialty CreateActiveWithOneTreatment(
+            string? specialtyName = null,
+            string? specialtyDescription = null)
         {
+            IEnumerable<(string name, decimal baseCost, string? description)> treatments =
+            [
+                (DefaultTreatmentName, DefaultTreatmentCost, DefaultTreatmentDescription)
+            ];
+
             return new Specialty(
-                new Name(DefaultName),
-                [TreatmentBuilder.Active()],
-                new Description(DefaultDescription)
+                specialtyName ?? DefaultSpecialtyName,
+                treatments,
+                specialtyDescription ?? DefaultSpecialtyDescription
             );
         }
 
-        public static Specialty ActiveWithOneTreatmentAndName(string name)
+        public static Specialty CreateActiveWithTreatments(
+            IEnumerable<(string name, decimal baseCost, string? description)> treatments,
+            string? specialtyName = null,
+            string? specialtyDescription = null)
         {
             return new Specialty(
-                new Name(name),
-                [TreatmentBuilder.Active()],
-                new Description(DefaultDescription)
+                specialtyName ?? DefaultSpecialtyName,
+                treatments,
+                specialtyDescription ?? DefaultSpecialtyDescription
             );
         }
 
-        public static Specialty ActiveWithTreatments(params Treatment[] treatments)
+        public static Specialty CreateActiveWithTwoDistinctTreatments()
         {
-            return new Specialty(
-                new Name(DefaultName),
-                [.. treatments],
-                new Description(DefaultDescription)
-            );
+            IEnumerable<(string name, decimal baseCost, string? description)> treatments =
+            [
+                ("Clear Aligners", 25.0m, "Removable transparent aligners."),
+                ("Retainers", 13.0m, "Devices used to maintain teeth position.")
+            ];
+
+            return CreateActiveWithTreatments(treatments);
         }
 
-        public static Specialty Inactive()
+        public static Specialty CreateActiveWithTwoDistinctTreatmentsAndOneInactiveTreatment()
         {
-            var specialty = ActiveWithOneTreatment();
+            IEnumerable<(string name, decimal baseCost, string? description)> treatments =
+            [
+                ("Clear Aligners", 25.0m, "Removable transparent aligners."),
+                ("Retainers", 13.0m, "Devices used to maintain teeth position.")
+            ];
+
+            var specialty = CreateActiveWithTreatments(treatments);
+
+            var treatmentToDeactivate = specialty.Treatments.First();
+            specialty.DeactivateTreatment(treatmentToDeactivate.TreatmentId);
+
+            return specialty;
+        }
+
+        public static Specialty CreateInactive(string? specialtyName = null)
+        {
+            var specialty = CreateActiveWithOneTreatment(specialtyName);
             specialty.Deactivate();
             return specialty;
         }
