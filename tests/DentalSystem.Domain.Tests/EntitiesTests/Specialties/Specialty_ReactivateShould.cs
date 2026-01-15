@@ -13,8 +13,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void Reactivate_WhenSpecialtyIsInactive_ShouldSetStatusToActive_AndCascadeToTreatments()
         {
             // Arrange
-            var specialty = SpecialtyBuilder.CreateActiveWithMultipleTreatments();
-            specialty.Deactivate();
+            var specialty = SpecialtyBuilder.CreateInactive();
 
             // snapshot
             Guid originalId = specialty.SpecialtyId;
@@ -31,7 +30,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             // check for invariants (what did NOT change)
             Assert.Equal(originalId, specialty.SpecialtyId);
-            Assert.Equal(originalName, specialty.Name);
+            Assert.Equal(originalName, specialty.Name.Value);
             Assert.Equal(originalDescription, specialty.Description?.Value);
 
             // verify that the treatments are still the same (by ID)
@@ -44,13 +43,13 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void Reactivate_WhenSpecialtyIsAlreadyActive_ShouldThrowInvalidStatusTransitionException_AndPreserveState()
         {
             // Arrange
-            var specialty = SpecialtyBuilder.CreateActiveWithMultipleTreatments();
+            var specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
             var expectedStatus = LifecycleStatus.Active();
 
             // snapshot
             Guid originalId = specialty.SpecialtyId;
             string? originalDescription = specialty.Description?.Value;
-            string originalName = specialty.Name;
+            string originalName = specialty.Name.Value;
             List<Treatment> originalTreatments = [.. specialty.Treatments];
 
             // Act

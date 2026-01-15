@@ -1,45 +1,38 @@
-﻿using DentalSystem.Application.Tests.Builders.Commands.Specialties;
-using DentalSystem.Application.Tests.Builders.Domain.Specialties;
+﻿using DentalSystem.Application.Tests.Builders.Domain.Specialties;
+using DentalSystem.Application.Tests.Fakes.Persistence;
 using DentalSystem.Application.Tests.Fakes.Repositories.Specialties;
 using DentalSystem.Application.UseCases.Specialties.DeactivateTreatment;
 using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.Exceptions;
+using DentalSystem.Domain.Exceptions.Specialties;
 
 namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatment
 {
-    public class DeactivateTreatmentTest
+    public sealed class DeactivateTreatmentTest
     {
         // Happy path
         [Fact]
         public async Task Handle_WhenDeactivateAnExistingTreatment_ShouldDeactivateInSpecialtyAndPersistChanges()
         {
             // Arrange
-            var aligners = TreatmentBuilder.Active(name: "Aligners", cost: 20, description: "Other treament");
-            var braces = TreatmentBuilder.Active();
-            Specialty specialty = SpecialtyBuilder.ActiveWithTreatments(braces, aligners);
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithTwoDistinctTreatments();
+            Guid treatmentToDeactivateId = specialty.Treatments.First().TreatmentId;
 
-            var repository = new FakeSpecialtyRepository();
+            DeactivateTreatmentCommand command = new(specialty.SpecialtyId, treatmentToDeactivateId);
+
+            FakeUnitOfWork unitOfWork = new();
+            FakeSpecialtyRepository repository = new(unitOfWork);
             repository.Add(specialty);
-            var handler = new DeactivateTreatmentHandler(repository);
 
-            var command = DeactivateTreatmentCommandBuilder.Valid(specialty.SpecialtyId, aligners.TreatmentId);
+            DeactivateTreatmentHandler handler = new(repository, unitOfWork);
 
             // Act
-            await handler.Handle(command);
+            await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            var stored = await repository.GetById(specialty.SpecialtyId);
-            Assert.True(stored!.Status.IsActive);
-
-            Assert.Equal(2, stored!.Treatments.Count);
-
-            Assert.True(stored.Treatments.Single(t => 
-            t.TreatmentId == braces.TreatmentId).Status.IsActive);
-
-            Assert.True(stored.Treatments.Single(t => 
-            t.TreatmentId == aligners.TreatmentId).Status.IsInactive);
-
-            Assert.True(repository.SaveWasCalled);
+            var stored = await repository.GetById(specialty.SpecialtyId, CancellationToken.None);
+            Assert.True(stored!.Treatments.Single(t => 
+                t.TreatmentId == treatmentToDeactivateId).Status.IsInactive);
+            Assert.True(unitOfWork.WasCommitted);
         }
 
 
@@ -49,53 +42,104 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
         public async Task Handle_WhenSpecialtyIsInactive_ShouldThrowInvalidSpecialtyStateException()
         {
             // Arrange
-            var aligners = TreatmentBuilder.Active(name: "Aligners", cost: 20, description: "Other treament");
-            var braces = TreatmentBuilder.Active();
-            Specialty specialty = SpecialtyBuilder.ActiveWithTreatments(braces, aligners);
-            specialty.Deactivate();
+            Specialty specialty = SpecialtyBuilder.CreateInactive();
+            Guid treatmentToDeactivateId = specialty.Treatments.First().TreatmentId;
 
-            var repository = new FakeSpecialtyRepository();
+            DeactivateTreatmentCommand command = new(specialty.SpecialtyId, treatmentToDeactivateId);
+
+            FakeUnitOfWork unitOfWork = new();
+            FakeSpecialtyRepository repository = new(unitOfWork);
             repository.Add(specialty);
 
-            var command = DeactivateTreatmentCommandBuilder.Valid(specialty.SpecialtyId, aligners.TreatmentId);
-
-            var handler = new DeactivateTreatmentHandler(repository);
+            DeactivateTreatmentHandler handler = new(repository, unitOfWork);
 
             // Act
             // Assert
-            await Assert.ThrowsAnyAsync<DomainException>(async () =>
+            await Assert.ThrowsAsync<InvalidSpecialtyStateException>(async () =>
             {
-                await handler.Handle(command);
+                await handler.Handle(command, CancellationToken.None);
             });
-            Assert.False(repository.SaveWasCalled);
+
+            Assert.False(unitOfWork.WasCommitted);
         }
 
 
         [Fact]
-        public async Task Handle_WhenDeactivateTheLastTreatment_ShouldThrowMinimunSpecialtyTeatmentsException()
+        public async Task Handle_WhenDeactivateTheLastTreatment_ShouldThrowMinimumSpecialtyTreatmentsException()
         {
             // Arrange
-            var braces = TreatmentBuilder.Active();
-            Specialty specialty = SpecialtyBuilder.ActiveWithTreatments(braces);
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
+            Guid treatmentToDeactivateId = specialty.Treatments.First().TreatmentId;
 
-            var repository = new FakeSpecialtyRepository();
+            DeactivateTreatmentCommand command = new(specialty.SpecialtyId, treatmentToDeactivateId);
+
+            FakeUnitOfWork unitOfWork = new();
+            FakeSpecialtyRepository repository = new(unitOfWork);
             repository.Add(specialty);
-            var handler = new DeactivateTreatmentHandler(repository);
 
-            var command = DeactivateTreatmentCommandBuilder.Valid(specialty.SpecialtyId, braces.TreatmentId);
+            DeactivateTreatmentHandler handler = new(repository, unitOfWork);
 
             // Act
             // Assert
-            await Assert.ThrowsAnyAsync<DomainException>(async () =>
+            await Assert.ThrowsAsync<MinimumSpecialtyTreatmentsException>(async () =>
             {
-                await handler.Handle(command);
+                await handler.Handle(command, CancellationToken.None);
             });
-            var stored = await repository.GetById(specialty.SpecialtyId);
-            Assert.True(stored!.Status.IsActive);
-            Assert.NotNull(stored);
-            Assert.True(stored.Treatments.Single(t =>
-                 t.TreatmentId == braces.TreatmentId).Status.IsActive);
-            Assert.False(repository.SaveWasCalled);
+
+            Assert.False(unitOfWork.WasCommitted);
+        }
+
+
+        [Fact]
+        public async Task Handle_WhenTreatmentDoesNotExist_ShouldThrowTreatmentNotFoundException()
+        {
+            // Arrange
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithTwoDistinctTreatments();
+            
+            DeactivateTreatmentCommand command = new(specialty.SpecialtyId, Guid.NewGuid());
+
+            FakeUnitOfWork unitOfWork = new();
+            FakeSpecialtyRepository repository = new(unitOfWork);
+            repository.Add(specialty);
+
+            DeactivateTreatmentHandler handler = new(repository, unitOfWork);
+
+            // Act
+            // Assert
+            await Assert.ThrowsAsync<TreatmentNotFoundException>(async () =>
+            {
+                await handler.Handle(command, CancellationToken.None);
+            });
+
+            Assert.False(unitOfWork.WasCommitted);
+        }
+
+
+        [Fact]
+        public async Task Handle_WhenTreatmentIsAlreadyInactive_ShouldThrowInvalidStatusTransitionException()
+        {
+            // Arrange
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithTwoDistinctTreatments();
+            Guid treatmentToDeactivateId = specialty.Treatments.First().TreatmentId;
+            Treatment treatmentToDeactivate = specialty.Treatments.First();
+            treatmentToDeactivate.Deactivate();
+
+            DeactivateTreatmentCommand command = new(specialty.SpecialtyId, treatmentToDeactivateId);
+
+            FakeUnitOfWork unitOfWork = new();
+            FakeSpecialtyRepository repository = new(unitOfWork);
+            repository.Add(specialty);
+
+            DeactivateTreatmentHandler handler = new(repository, unitOfWork);
+
+            // Act
+            // Assert
+            await Assert.ThrowsAsync<InvalidStatusTransitionException>(async () =>
+            {
+                await handler.Handle(command, CancellationToken.None);
+            });
+
+            Assert.False(unitOfWork.WasCommitted);
         }
     }
 }

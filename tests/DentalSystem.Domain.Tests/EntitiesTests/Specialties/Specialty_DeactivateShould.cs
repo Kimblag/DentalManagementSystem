@@ -18,26 +18,22 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
             //Assert
             Assert.True(specialty.Status.IsInactive);
-
             Assert.All(specialty.Treatments, t =>
                 Assert.True(t.Status.IsInactive));
         }
-
 
         // errors
         [Fact]
         public void Deactivate_WhenSpecialtyIsAlreadyInactive_ShouldThrowInvalidStatusTransitionException()
         {
             // Arrange
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
+            Specialty inactiveSpecialty = SpecialtyBuilder.CreateInactive();
 
             // Act
-            specialty.Deactivate();
-
             // Assert
             Assert.Throws<InvalidStatusTransitionException>(() =>
             {
-                specialty.Deactivate();
+                inactiveSpecialty.Deactivate();
             });
         }
     }

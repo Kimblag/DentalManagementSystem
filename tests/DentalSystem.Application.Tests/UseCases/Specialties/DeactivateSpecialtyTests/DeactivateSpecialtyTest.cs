@@ -1,0 +1,88 @@
+﻿using DentalSystem.Application.Exceptions;
+using DentalSystem.Application.Tests.Builders.Domain.Specialties;
+using DentalSystem.Application.Tests.Fakes.Persistence;
+using DentalSystem.Application.Tests.Fakes.Repositories.Specialties;
+using DentalSystem.Application.UseCases.Specialties.DeactivateSpecialty;
+using DentalSystem.Domain.Entities;
+using DentalSystem.Domain.Exceptions.Specialties;
+
+namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateSpecialtyTests
+{
+    public sealed class DeactivateSpecialtyTest
+    {
+
+        // Happy path
+        [Fact]
+        public async Task Handle_WhenSpecialtyIsActive_ShouldDeactivateAndPersistChanges()
+        {
+            // Arrange
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
+
+            // Add to repo
+            FakeUnitOfWork unitOfWork = new();
+            FakeSpecialtyRepository repository = new(unitOfWork);
+            repository.Add(specialty);
+
+            DeactivateSpecialtyHandler handler = new(repository, unitOfWork);
+
+            // Act
+            await handler.Handle(specialty.SpecialtyId, CancellationToken.None);
+
+            // Assert
+            // It must be persisted
+            Assert.True(unitOfWork.WasCommitted);
+
+            var stored = await repository.GetById(specialty.SpecialtyId, CancellationToken.None);
+            // Check observable changes
+            Assert.True(stored!.Status.IsInactive);
+            Assert.All(
+                   stored.Treatments,
+                   t => Assert.True(t.Status.IsInactive)
+               );
+        }
+
+
+        // Specialty not found
+        [Fact]
+        public async Task Handle_WhenSpecialtyDoesNotExist_ShouldThrowSpecialtyNotFoundException()
+        {
+            // Arrange
+            FakeUnitOfWork unitOfWork = new();
+            FakeSpecialtyRepository repository = new(unitOfWork);
+
+            DeactivateSpecialtyHandler handler = new(repository, unitOfWork);
+
+            // Act
+            // Assert
+            await Assert.ThrowsAsync<SpecialtyNotFoundException>(async () =>
+            {
+                await handler.Handle(Guid.NewGuid(), CancellationToken.None);
+            });
+            Assert.False(unitOfWork.WasCommitted);
+        }
+
+
+        // Specialty already inactive
+        [Fact]
+        public async Task Handle_WhenSpecialtyIsAlreadyInactive_ShouldThrowInvalidStatusTransitionException_AndNotPersist()
+        {
+            // Arrange
+            Specialty specialty = SpecialtyBuilder.CreateInactive();
+
+            FakeUnitOfWork unitOfWork = new();
+            FakeSpecialtyRepository repository = new(unitOfWork);
+
+            repository.Add(specialty);
+
+            DeactivateSpecialtyHandler handler = new(repository, unitOfWork);
+
+            // Act
+            // Assert
+            await Assert.ThrowsAsync<InvalidStatusTransitionException>(async () =>
+            {
+                await handler.Handle(specialty.SpecialtyId, CancellationToken.None);
+            });
+            Assert.False(unitOfWork.WasCommitted);
+        }
+    }
+}

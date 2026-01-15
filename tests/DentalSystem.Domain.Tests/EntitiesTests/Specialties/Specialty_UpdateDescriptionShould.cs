@@ -1,7 +1,5 @@
 ﻿using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.ValueObjects;
 using DentalSystem.Domain.Tests.Builder;
-using DentalSystem.Domain.Exceptions.Specialties;
 using DentalSystem.Domain.Exceptions;
 
 namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
@@ -14,31 +12,38 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         {
             // Arrange
             string specialtyName = "Endodontics";
+            string specialtyDescription = "Old Description";
+            
             string newSpecialtyDescription = "New Description";
-            Treatment treatment = TreatmentBuilder.CreateValid();
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithTreatments([treatment], specialtyName, "Old description");
+            
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment(specialtyName, specialtyDescription);
 
             // Act
-            specialty.UpdateDescription(new Description(newSpecialtyDescription));
+            specialty.UpdateDescription(newSpecialtyDescription);
 
             // Assert
-            Assert.Equal(specialtyName, specialty.Name);
+            // Check that the name is the same
+            Assert.Equal(specialtyName, specialty.Name.Value);
+
+            // Check the description has changed.
             Assert.Equal(newSpecialtyDescription, specialty.Description?.Value);
         }
+
 
         [Fact]
         public void UpdateDescription_WhenNullOrEmpty_ShouldClearProperty()
         {
             // Arrange
             string specialtyName = "Endodontics";
-            Treatment treatment = TreatmentBuilder.CreateValid();
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithTreatments([treatment], specialtyName, "Old description");
+            string specialtyDescription = "Old Description";
+
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment(specialtyName, specialtyDescription);
 
             // Act
             specialty.UpdateDescription(null);
 
             // Assert
-            Assert.Equal(specialtyName, specialty.Name);
+            Assert.Equal(specialtyName, specialty.Name.Value);
             Assert.Null(specialty.Description?.Value);
         }
 
@@ -55,7 +60,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Assert
             Assert.ThrowsAny<DomainException>(() =>
             {
-                specialty.UpdateDescription(new Description("New Description"));
+                specialty.UpdateDescription("New Description");
             });
         }
 
@@ -70,7 +75,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Assert
             Assert.ThrowsAny<DomainException>(() =>
             {
-                specialty.UpdateDescription(new Description("!!"));
+                specialty.UpdateDescription("!!");
             });
         }
 

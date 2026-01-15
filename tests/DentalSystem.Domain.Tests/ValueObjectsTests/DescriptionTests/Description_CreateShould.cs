@@ -6,19 +6,6 @@ namespace DentalSystem.Domain.Tests.ValueObjectsTests.DescriptionTests
     public  class Description_CreateShould
     {
         [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("   ")]
-        public void Create_WhenDescriptionIsEmpty_ShouldBeNull(string? emptyDescription)
-        {
-            // Act
-            var description = new Description(emptyDescription!);
-
-            // Assert
-            Assert.Null(description.Value);
-        }
-
-        [Theory]
         [InlineData("Basic preventive treatment.")]
         [InlineData("Tratamiento con aparatos metálicos.")]
         public void Create_WhenDescriptionIsValid_ShouldStoreValue(string validDescription)

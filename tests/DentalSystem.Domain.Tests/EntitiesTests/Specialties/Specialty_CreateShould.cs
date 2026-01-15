@@ -16,22 +16,25 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Arrange
             string specialtyName = "Orthodontics";
             string specialtyDescription = "Focuses on correcting teeth and jaw alignment issues.";
+            string treatmentName = "Clear Aligners";
+            decimal treatmentBaseCost = 25;
+            string treatmentDescription = "Removable transparent aligners.";
 
-            Treatment braces = TreatmentBuilder.CreateValid();
+            IEnumerable<(string name, decimal baseCost, string? description)> treatments =
+            [
+                (treatmentName, treatmentBaseCost, treatmentDescription),
+            ];
 
             // Act
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithTreatments(
-                [braces],
-                specialtyName,
-                specialtyDescription);
+            Specialty specialty = new(specialtyName, treatments, specialtyDescription);
 
             // Assert
-            Assert.Equal(specialtyName, specialty.Name);
+            Assert.Equal(specialtyName, specialty.Name.Value);
             Assert.Equal(specialtyDescription, specialty.Description?.Value);
             Assert.True(specialty.Status.IsActive);
 
             Assert.Single(specialty.Treatments);
-            Assert.Contains(braces, specialty.Treatments);
+            Assert.Contains(specialty.Treatments, t => t.Name.Value == treatmentName);
         }
 
 
@@ -40,14 +43,15 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void Create_WhenTreatmentListIsEmpty_ShouldThrowDomainException()
         {
             // Arrange
-            Name specialtyName = new("Orthodontics");
-            Description specialtyDescription = new("Focuses on correcting teeth and jaw alignment issues.");
-            List<Treatment> invalidTreatments = [];
+            string specialtyName = "Orthodontics";
+            string specialtyDescription = "Focuses on correcting teeth and jaw alignment issues.";
+
+            IEnumerable<(string name, decimal baseCost, string? description)> invalidTreatments = [];
 
             // Act and Assert
             Assert.ThrowsAny<DomainException>(() =>
             {
-                new Specialty(specialtyName, invalidTreatments, specialtyDescription);
+               _ = new Specialty(specialtyName, invalidTreatments, specialtyDescription);
             });
         }
         
@@ -56,17 +60,25 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void Create_WhenTreatmentNamesAreDuplicated_ShouldThrowDomainException()
         {
             // Arrange
-            string duplicateName = "Braces";
-            Treatment treatment1 = TreatmentBuilder.CreateValid(duplicateName);
-            Treatment treatment2 = TreatmentBuilder.CreateValid(duplicateName);
+            string duplicateTreatmentName = "Braces";
 
-            Name specialtyName = new("Orthodontics");
-            Description specialtyDescription = new("Focuses on correcting teeth and jaw alignment issues.");
+            string specialtyName = "Orthodontics";
+            string specialtyDescription = "Focuses on correcting teeth and jaw alignment issues.";
+
+            decimal treatmentBaseCost = 25;
+            decimal treatmentBaseCost2 = 12;
+            string treatmentDescription = "Removable transparent aligners.";
+
+            IEnumerable<(string name, decimal baseCost, string? description)> invalidTreatments =
+            [
+                (duplicateTreatmentName, treatmentBaseCost, treatmentDescription),
+                (duplicateTreatmentName, treatmentBaseCost2, null),
+            ];
 
             // Act and Assert
             Assert.ThrowsAny<DomainException>(() =>
             {
-                new Specialty(specialtyName, [treatment1, treatment2], specialtyDescription);
+                new Specialty(specialtyName, invalidTreatments, specialtyDescription);
             });
         }
 

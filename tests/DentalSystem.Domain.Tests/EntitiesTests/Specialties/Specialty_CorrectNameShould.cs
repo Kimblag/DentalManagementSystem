@@ -17,25 +17,25 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void CorrectName_WhenValidName_ShouldUpdateName_AndPreserveInvariants(string inputName)
         {
             // Arrange
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment("Orthdontics");
-            var expectedStatus = LifecycleStatus.Active();
-
-            var originalId = specialty.SpecialtyId;
-            List<Treatment> originalTreatments = [.. specialty.Treatments];
-            string? originalDescription = specialty.Description?.ToString();
-
             string expectedName = "Orthodontics";
+            LifecycleStatus expectedStatus = LifecycleStatus.Active();
+
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment(specialtyName: expectedName);
+
+            Guid originalId = specialty.SpecialtyId;
+            string? originalDescription = specialty.Description?.ToString();
+            List<Treatment> originalTreatments = [.. specialty.Treatments];
 
             // Act
             specialty.CorrectName(inputName);
 
             // Assert
-            Assert.Equal(expectedName, specialty.Name);
+            Assert.Equal(expectedName, specialty.Name.Value);
+            Assert.Equal(expectedStatus, specialty.Status);
             specialty.AssertInvariants(
                  originalId,
                  originalTreatments,
                  expectedDescription: originalDescription);
-            Assert.Equal(expectedStatus, specialty.Status);
         }
 
 
@@ -45,7 +45,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Arrange
             string cleanName = "Orthodontics";
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment(cleanName);
-            var expectedStatus = LifecycleStatus.Active();
+            LifecycleStatus expectedStatus = LifecycleStatus.Active();
 
             // snapshot
             Guid originalId = specialty.SpecialtyId;
@@ -69,11 +69,13 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void CorrectName_WhenOnlyCaseDiffers_ShouldNotMutate()
         {
             // Arrange
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment("Orthodontics");
-            var expectedStatus = LifecycleStatus.Active();
+            string expectedName = "Orthodontics";
 
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment(expectedName);
+            LifecycleStatus expectedStatus = LifecycleStatus.Active();
+
+            Guid originalId = specialty.SpecialtyId;
             List<Treatment> originalTreatments = [.. specialty.Treatments];
-            var originalId = specialty.SpecialtyId;
 
             // Act
             specialty.CorrectName("orthodontics");
@@ -82,7 +84,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             specialty.AssertInvariants(
                  originalId,
                  originalTreatments,
-                 expectedName: "Orthodontics");
+                 expectedName: expectedName);
             Assert.Equal(expectedStatus, specialty.Status);
         }
 
@@ -93,29 +95,28 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void CorrectName_WhenSpecialtyIsInactive_ShouldThrowInvalidSpecialtyStateException()
         {
             // Arrange
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment("Orthdontics");
-            specialty.Deactivate();
-            var expectedStatus = LifecycleStatus.Inactive();
+            Specialty specialty = SpecialtyBuilder.CreateInactive();
+            LifecycleStatus expectedStatus = LifecycleStatus.Inactive();
 
             // take a snapshot of the current state
             Guid originalId = specialty.SpecialtyId;
             List<Treatment> originalTreatments = [.. specialty.Treatments];
-            string originalName = specialty.Name.ToString();
-            string? originalDescription = specialty.Description?.ToString();
+            string originalName = specialty.Name.Value;
+            string? originalDescription = specialty.Description?.Value;
 
             // Act
             // Assert
             Assert.Throws<InvalidSpecialtyStateException>(() =>
             {
-                specialty.CorrectName("Orthodontics");
+                specialty.CorrectName("Orthodontics Spec.");
             });
 
+            Assert.Equal(expectedStatus, specialty.Status);
             specialty.AssertInvariants(
                  originalId,
                  originalTreatments,
                  expectedName: originalName,
                  expectedDescription: originalDescription);
-            Assert.Equal(expectedStatus, specialty.Status);
         }
 
 
@@ -128,7 +129,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
             // Arrange
             string originalName = "Orthdontics";
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment(originalName);
-            var expectedStatus = LifecycleStatus.Active();
+            LifecycleStatus expectedStatus = LifecycleStatus.Active();
 
             Guid originalId = specialty.SpecialtyId;
             List<Treatment> originalTreatments = [.. specialty.Treatments];

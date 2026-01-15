@@ -1,5 +1,4 @@
 ﻿using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Domain.Tests.Helpers
 {
@@ -26,7 +25,7 @@ namespace DentalSystem.Domain.Tests.Helpers
 
             // if ther are passed, optional data validation
             if (expectedName != null)
-                Assert.Equal(expectedName, specialty.Name);
+                Assert.Equal(expectedName, specialty.Name.Value);
 
             if (expectedDescription != null)
                 Assert.Equal(expectedDescription, specialty.Description?.Value);

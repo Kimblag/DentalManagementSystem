@@ -12,15 +12,14 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         {
             // Arrange
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
-            Treatment newTreatment = TreatmentBuilder.CreateValid("Clear Aligners");
 
             // Act
             // add a valid treatment
-            specialty.AddTreatment(newTreatment);
+            specialty.AddTreatment("Retainers", 20, "A new treatment");
 
             // Assert
             Assert.Equal(2, specialty.Treatments.Count);
-            Assert.Contains(newTreatment, specialty.Treatments);
+            Assert.Contains(specialty.Treatments, t => t.Name.Value == "Retainers");
         }
 
 
@@ -34,13 +33,13 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         {
             // Arrange
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
-            Treatment newTreatment = TreatmentBuilder.CreateValid(duplicateTreatmentName);
+           
 
             // Act
             // Assert
             Assert.Throws<DuplicateTreatmentNameException>(() =>
             {
-                specialty.AddTreatment(newTreatment);
+                specialty.AddTreatment(duplicateTreatmentName, 20, "A new treatment");
             });
         }
 
@@ -49,31 +48,15 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void AddTreatment_WhenSpecialtyIsInactive_ShouldThrowInvalidSpecialtyStateException()
         {
             // Arrange
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
-            Treatment newTreatment = TreatmentBuilder.CreateValid("Retainers");
-            specialty.Deactivate();
-
+            Specialty inactiveSpecialty = SpecialtyBuilder.CreateInactive();
+           
             //Act
             //Assert
             Assert.Throws<InvalidSpecialtyStateException>(() =>
             {
-                specialty.AddTreatment(newTreatment);
+                inactiveSpecialty.AddTreatment("Retainers", 20, "A new treatment");
             });
         }
 
-
-        [Fact]
-        public void AddTreatment_WhenTreatmentIsNull_ShouldThrowArgumentNullException()
-        {
-            // Assert
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
-
-            // Act
-            // Assert
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                specialty.AddTreatment(null!);
-            });
-        }
     }
 }

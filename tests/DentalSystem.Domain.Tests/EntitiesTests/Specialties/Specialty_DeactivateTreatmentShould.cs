@@ -11,21 +11,17 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void DeactivateTreatment_WhenValidIdAndMultipleExist_ShouldSetTreatmentToInactive() 
         {
             // Arrange
-            Treatment treatment1 = TreatmentBuilder.CreateValid();
-            Treatment treatment2 = TreatmentBuilder.CreateValid("Retainers", 10.0m, 
-                "Devices used to maintain teeth position after treatment.");
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithTwoDistinctTreatments();
 
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithTreatments(
-            [
-                treatment1,
-                treatment2,
-            ]);
+            // get the first treatment
+            Treatment treatmentToDeactivate = specialty.Treatments.First();
+            Guid treatmentToDeactivateId = specialty.Treatments.First().TreatmentId;
 
             // Act
-            specialty.DeactivateTreatment(treatment2.TreatmentId);
+            specialty.DeactivateTreatment(treatmentToDeactivateId);
 
             // Assert
-            Assert.True(treatment2.Status.IsInactive);
+            Assert.True(treatmentToDeactivate.Status.IsInactive);
         }
 
 
@@ -33,42 +29,34 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void DeactivateTreatment_WhenIsTheLastActiveTreatment_ShouldThrowMinimumSpecialtyTreatmentsException()
         {
             // Arrange
-            Treatment treatment1 = TreatmentBuilder.CreateValid();
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
 
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithTreatments(
-            [
-                treatment1,
-            ]);
+            Treatment treatmentToDeactivate = specialty.Treatments.First();
+            Guid treatmentToDeactivateId = specialty.Treatments.First().TreatmentId;
 
             // Act
             // Assert
             Assert.Throws<MinimumSpecialtyTreatmentsException>(() =>
             {
-                specialty.DeactivateTreatment(treatment1.TreatmentId);
+                specialty.DeactivateTreatment(treatmentToDeactivateId);
             });
         }
+
 
         [Fact]
         public void DeactivateTreatment_WhenSpecialtyIsNotActive_ShouldThrowInvalidSpecialtyStateException() 
         {
             // Arrange
-            Treatment treatment1 = TreatmentBuilder.CreateValid();
-            Treatment treatment2 = TreatmentBuilder.CreateValid("Retainers", 10.0m, 
-                "Devices used to maintain teeth position after treatment.");
+            Specialty specialty = SpecialtyBuilder.CreateInactive();
 
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithTreatments(
-            [
-                treatment1,
-                treatment2,
-            ]);
-
-            specialty.Deactivate();
+            Treatment treatmentToDeactivate = specialty.Treatments.First();
+            Guid treatmentToDeactivateId = specialty.Treatments.First().TreatmentId;
 
             // Act
             // Assert
             Assert.Throws<InvalidSpecialtyStateException>(() =>
             {
-                specialty.DeactivateTreatment(treatment1.TreatmentId);
+                specialty.DeactivateTreatment(treatmentToDeactivateId);
             });
         }
 
@@ -77,14 +65,7 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
         public void DeactivateTreatment_WhenTreatmentIdIsNotFound_ShouldThrowTreatmentNotFoundException() 
         {
             // Arrange
-            Treatment treatment1 = TreatmentBuilder.CreateValid();
-            Treatment treatment2 = TreatmentBuilder.CreateValid("Retainers", 10.0m, "Devices used to maintain teeth position after treatment.");
-
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithTreatments(
-            [
-                treatment1,
-                treatment2,
-            ]);
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithTwoDistinctTreatments();
 
             // Act
             // Assert
@@ -96,29 +77,19 @@ namespace DentalSystem.Domain.Tests.EntitiesTests.Specialties
 
 
         [Fact]
-        public void DeactivateTreatment_WhenTreatmentIsAlreadyInactive_ShouldThrowTreatmentAlreadyInactiveException()
+        public void DeactivateTreatment_WhenTreatmentIsAlreadyInactive_ShouldThrowInvalidStatusTransitionExceptionException()
         {
             // Arrange
-            Treatment treatment1 = TreatmentBuilder.CreateValid();
-            Treatment treatment2 = TreatmentBuilder.CreateValid("Retainers", 20.0m, 
-                "Devices used to maintain teeth position after treatment.");
-            Treatment inactivetreatment = TreatmentBuilder.CreateValid("Clear Aligners", 25.0m, 
-                "Removable transparent aligners for teeth correction.");
+            Specialty specialty = SpecialtyBuilder.CreateActiveWithTwoDistinctTreatments();
 
-            Specialty specialty = SpecialtyBuilder.CreateActiveWithTreatments(
-            [
-                treatment1,
-                treatment2,
-                inactivetreatment,
-            ]);
-
-            specialty.DeactivateTreatment(inactivetreatment.TreatmentId);
+            Guid treatmentToDeactivateId = specialty.Treatments.First().TreatmentId;
+            specialty.DeactivateTreatment(treatmentToDeactivateId);
 
             // Act
             // Assert
-            Assert.Throws<TreatmentAlreadyInactiveException>(() =>
+            Assert.Throws<InvalidStatusTransitionException>(() =>
             {
-                specialty.DeactivateTreatment(inactivetreatment.TreatmentId);
+                specialty.DeactivateTreatment(treatmentToDeactivateId);
             });
         }
 
