@@ -10,8 +10,6 @@ namespace DentalSystem.Domain.Entities
     public class Specialty : AggregateRoot
     {
         public Guid SpecialtyId { get; private set; } // Domain identity
-        public int Id { get; private set; } // EF persistence Identity
-
         public Name Name { get; private set; } = null!;
         public Description? Description { get; private set; } = null;
         public LifecycleStatus Status { get; private set; } = LifecycleStatus.Active(); // active by default
@@ -104,6 +102,10 @@ namespace DentalSystem.Domain.Entities
             var treatment = GetActiveTreatmentForModification(treatmentId);
 
             var previousName = treatment.Name;
+
+            if (_treatments.Any(t => (t.Name.Value.Equals(rawName.Trim(), StringComparison.OrdinalIgnoreCase) 
+            && !t.Name.Value.Equals(rawName.Trim(), StringComparison.OrdinalIgnoreCase) )))
+                throw new DuplicateTreatmentNameException();
 
             treatment.CorrectName(rawName);
 

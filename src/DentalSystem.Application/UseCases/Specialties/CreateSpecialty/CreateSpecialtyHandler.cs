@@ -16,10 +16,10 @@ namespace DentalSystem.Application.UseCases.Specialties.CreateSpecialty
                 .Select(t => (t.Name, t.BaseCost, t.Description));
 
             Specialty specialty = new(command.Name, treatmentsTuples, command.Description);
-            await _repository.Save(specialty, cancellationToken);
+            _repository.Add(specialty);
 
             // successfull creation
-            _unitOfWork.Commit();
+            await _unitOfWork.CommitAsync();
         }
     }
 }

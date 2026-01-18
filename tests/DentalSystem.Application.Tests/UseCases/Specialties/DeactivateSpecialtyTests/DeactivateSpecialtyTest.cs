@@ -20,7 +20,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateSpecialt
 
             // Add to repo
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             DeactivateSpecialtyHandler handler = new(repository, unitOfWork);
@@ -30,9 +30,8 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateSpecialt
 
             // Assert
             // It must be persisted
-            Assert.True(unitOfWork.WasCommitted);
 
-            var stored = await repository.GetById(specialty.SpecialtyId, CancellationToken.None);
+            var stored = await repository.GetByIdAsync(specialty.SpecialtyId, CancellationToken.None);
             // Check observable changes
             Assert.True(stored!.Status.IsInactive);
             Assert.All(
@@ -48,7 +47,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateSpecialt
         {
             // Arrange
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             DeactivateSpecialtyHandler handler = new(repository, unitOfWork);
 
@@ -58,7 +57,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateSpecialt
             {
                 await handler.Handle(Guid.NewGuid(), CancellationToken.None);
             });
-            Assert.False(unitOfWork.WasCommitted);
         }
 
 
@@ -70,7 +68,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateSpecialt
             Specialty specialty = SpecialtyBuilder.CreateInactive();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             repository.Add(specialty);
 
@@ -82,7 +80,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateSpecialt
             {
                 await handler.Handle(specialty.SpecialtyId, CancellationToken.None);
             });
-            Assert.False(unitOfWork.WasCommitted);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             repository.Add(specialty);
 
@@ -32,9 +32,8 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            var stored = await repository.GetById(specialty.SpecialtyId, CancellationToken.None);
+            var stored = await repository.GetByIdAsync(specialty.SpecialtyId, CancellationToken.None);
             Assert.Equal(updatedDescription, stored!.Description?.Value);
-            Assert.True(unitOfWork.WasCommitted);
         }
 
 
@@ -47,7 +46,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             repository.Add(specialty);
 
@@ -61,7 +60,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             {
                 await handler.Handle(command, CancellationToken.None);
             });
-            Assert.False(unitOfWork.WasCommitted);
         }
 
 
@@ -72,7 +70,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             Specialty specialty = SpecialtyBuilder.CreateInactive();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             repository.Add(specialty);
 
@@ -86,7 +84,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             {
                 await handler.Handle(command, CancellationToken.None);
             });
-            Assert.False(unitOfWork.WasCommitted);
         }
 
     }

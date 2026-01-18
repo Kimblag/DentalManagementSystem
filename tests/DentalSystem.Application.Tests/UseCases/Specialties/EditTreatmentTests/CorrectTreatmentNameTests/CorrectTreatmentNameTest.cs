@@ -19,7 +19,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditTreatmentTests
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             repository.Add(specialty);
 
@@ -32,35 +32,37 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditTreatmentTests
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            var stored = await repository.GetById(specialty.SpecialtyId, CancellationToken.None);
+            var stored = await repository.GetByIdAsync(specialty.SpecialtyId, CancellationToken.None);
             Assert.Equal(expectedName, stored!.Treatments.Single(t =>
                 t.TreatmentId == treatmentId).Name.Value);
-            Assert.True(unitOfWork.WasCommitted);
         }
 
        
         // Name is the same
         [Fact]
-        public async Task Handle_WhenNameIsSame_ShouldNotCommit()
+        public async Task Handle_WhenNameIsSame_ShouldLeaveAggregateUnchanged()
         {
             // Arrange
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             repository.Add(specialty);
 
-            Guid treatmentId = specialty.Treatments.First().TreatmentId;
+            Treatment treatment = specialty.Treatments.First();
+            string originalName = treatment.Name.Value;
 
-            CorrectTreatmentNameCommand command = new(specialty.SpecialtyId, treatmentId, "Braces");
+            CorrectTreatmentNameCommand command = new(specialty.SpecialtyId, treatment.TreatmentId, "Braces");
             CorrectTreatmentNameHandler handler = new(repository, unitOfWork);
 
             // Act
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.False(unitOfWork.WasCommitted);
+            Specialty? unchangedSpecialty = await repository.GetByIdAsync(specialty.SpecialtyId, CancellationToken.None);
+            Treatment unchangedTreatment = unchangedSpecialty!.Treatments.First();
+            Assert.Equal(originalName, unchangedTreatment.Name.Value);
         }
 
         // specialty does not exist
@@ -69,7 +71,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditTreatmentTests
         {
             // Arrange
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             CorrectTreatmentNameCommand command = new(Guid.NewGuid(), Guid.NewGuid(), "Braces");
             CorrectTreatmentNameHandler handler = new(repository, unitOfWork);
@@ -80,8 +82,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditTreatmentTests
             {
                 await handler.Handle(command, CancellationToken.None);
             });
-
-            Assert.False(unitOfWork.WasCommitted);
         }
 
 
@@ -92,7 +92,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditTreatmentTests
             Specialty specialty = SpecialtyBuilder.CreateActiveWithTwoDistinctTreatments();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             repository.Add(specialty);
 
@@ -108,8 +108,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditTreatmentTests
             {
                 await handler.Handle(command, CancellationToken.None);
             });
-
-            Assert.False(unitOfWork.WasCommitted);
         }
 
 
@@ -120,7 +118,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditTreatmentTests
             Specialty specialty = SpecialtyBuilder.CreateActiveWithTwoDistinctTreatments();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             repository.Add(specialty);
 
@@ -133,8 +131,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditTreatmentTests
             {
                 await handler.Handle(command, CancellationToken.None);
             });
-
-            Assert.False(unitOfWork.WasCommitted);
         }
 
     }

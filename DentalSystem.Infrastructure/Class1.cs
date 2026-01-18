@@ -1,4 +1,4 @@
-﻿namespace DentalSystem.Application
+﻿namespace DentalSystem.Infrastructure
 {
     public class Class1
     {

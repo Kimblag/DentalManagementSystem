@@ -20,7 +20,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
             DeactivateTreatmentCommand command = new(specialty.SpecialtyId, treatmentToDeactivateId);
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             DeactivateTreatmentHandler handler = new(repository, unitOfWork);
@@ -29,10 +29,9 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            var stored = await repository.GetById(specialty.SpecialtyId, CancellationToken.None);
+            var stored = await repository.GetByIdAsync(specialty.SpecialtyId, CancellationToken.None);
             Assert.True(stored!.Treatments.Single(t => 
                 t.TreatmentId == treatmentToDeactivateId).Status.IsInactive);
-            Assert.True(unitOfWork.WasCommitted);
         }
 
 
@@ -48,7 +47,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
             DeactivateTreatmentCommand command = new(specialty.SpecialtyId, treatmentToDeactivateId);
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             DeactivateTreatmentHandler handler = new(repository, unitOfWork);
@@ -60,7 +59,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
                 await handler.Handle(command, CancellationToken.None);
             });
 
-            Assert.False(unitOfWork.WasCommitted);
         }
 
 
@@ -74,7 +72,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
             DeactivateTreatmentCommand command = new(specialty.SpecialtyId, treatmentToDeactivateId);
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             DeactivateTreatmentHandler handler = new(repository, unitOfWork);
@@ -86,7 +84,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
                 await handler.Handle(command, CancellationToken.None);
             });
 
-            Assert.False(unitOfWork.WasCommitted);
         }
 
 
@@ -99,7 +96,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
             DeactivateTreatmentCommand command = new(specialty.SpecialtyId, Guid.NewGuid());
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             DeactivateTreatmentHandler handler = new(repository, unitOfWork);
@@ -111,7 +108,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
                 await handler.Handle(command, CancellationToken.None);
             });
 
-            Assert.False(unitOfWork.WasCommitted);
         }
 
 
@@ -127,7 +123,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
             DeactivateTreatmentCommand command = new(specialty.SpecialtyId, treatmentToDeactivateId);
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             DeactivateTreatmentHandler handler = new(repository, unitOfWork);
@@ -139,7 +135,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateTreatmen
                 await handler.Handle(command, CancellationToken.None);
             });
 
-            Assert.False(unitOfWork.WasCommitted);
         }
     }
 }

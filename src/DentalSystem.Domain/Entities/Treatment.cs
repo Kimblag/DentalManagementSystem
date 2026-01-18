@@ -11,9 +11,6 @@ namespace DentalSystem.Domain.Entities
     {
         // Domain identity
         public Guid TreatmentId { get; private set; }
-
-        // EF persistence Identity
-        public int Id { get; private set; }
         public Name Name { get; private set; } = null!;
         public Description? Description { get; private set; } = null;
         public decimal BaseCost { get; private set; } = 0;

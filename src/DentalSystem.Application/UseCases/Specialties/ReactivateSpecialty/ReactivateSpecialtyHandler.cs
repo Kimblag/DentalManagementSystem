@@ -12,18 +12,18 @@ namespace DentalSystem.Application.UseCases.Specialties.ReactivateSpecialty
         public async Task Handle(Guid specialtyId, CancellationToken cancellationToken)
         {
             // Get the specialty
-            var specialty = await _repository.GetById(specialtyId, cancellationToken)
+            var specialty = await _repository.GetByIdAsync(specialtyId, cancellationToken)
                 ?? throw new SpecialtyNotFoundException();
 
             // Ask to domain to reactivate the specialty
             specialty.Reactivate();
 
             // Save the new state
-            await _repository.Save(specialty, cancellationToken);
+            _repository.Add(specialty);
 
             if (_unitOfWork.HasChanges())
             {
-                _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
             }
         }
     }

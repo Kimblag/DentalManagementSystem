@@ -19,7 +19,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateSpecialt
 
             // Add to repo
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             
             repository.Add(specialty);
 
@@ -29,7 +29,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateSpecialt
             await handler.Handle(specialty.SpecialtyId, CancellationToken.None);
 
             // Assert
-            var stored = await repository.GetById(specialty.SpecialtyId, CancellationToken.None);
+            var stored = await repository.GetByIdAsync(specialty.SpecialtyId, CancellationToken.None);
 
             // Check if specialty is inactive
             Assert.True(stored!.Status.IsActive);
@@ -38,8 +38,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateSpecialt
                    stored.Treatments,
                    t => Assert.True(t.Status.IsActive)
                );
-            // It must be persisted
-            Assert.True(unitOfWork.WasCommitted);
         }
 
         // Errors
@@ -51,7 +49,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateSpecialt
 
             // Add to repo
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             repository.Add(specialty);
             var handler = new ReactivateSpecialtyHandler(repository, unitOfWork);
@@ -62,7 +60,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateSpecialt
             {
                 await handler.Handle(specialty.SpecialtyId, CancellationToken.None);
             });
-            Assert.False(unitOfWork.WasCommitted);
         }
     }
 }

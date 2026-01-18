@@ -11,16 +11,16 @@ namespace DentalSystem.Application.UseCases.Specialties.EditTreatment.CorrectTre
 
         public async Task Handle(CorrectTreatmentNameCommand command, CancellationToken cancellationToken)
         {
-            var specialty = await _repository.GetById(command.SpecialtyId, cancellationToken) ??
+            var specialty = await _repository.GetByIdAsync(command.SpecialtyId, cancellationToken) ??
                 throw new SpecialtyNotFoundException();
 
             specialty.CorrectTreatmentName(command.TreatmentId, command.Name);
 
-            await _repository.Save(specialty, cancellationToken);
+            _repository.Add(specialty);
 
             if (_unitOfWork.HasChanges())
             {
-                _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
             }
         }
     }

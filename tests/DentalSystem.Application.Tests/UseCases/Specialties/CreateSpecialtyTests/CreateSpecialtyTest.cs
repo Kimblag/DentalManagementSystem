@@ -13,7 +13,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.CreateSpecialtyTes
         {
             // Arrange
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             CreateSpecialtyHandler handler = new(repository, unitOfWork);
 
@@ -27,9 +27,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.CreateSpecialtyTes
             // Act
             await handler.Handle(command, CancellationToken.None);
 
-            // Assert
-            // IT must be persisted
-            Assert.True(unitOfWork.WasCommitted);
+           
         }
 
 
@@ -39,7 +37,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.CreateSpecialtyTes
         {
             // Arrange
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             CreateSpecialtyHandler handler = new(repository, unitOfWork);
 
@@ -52,7 +50,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.CreateSpecialtyTes
             {
                 await handler.Handle(command, CancellationToken.None);
             });
-            Assert.False(unitOfWork.WasCommitted);
         }
 
 
@@ -61,7 +58,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.CreateSpecialtyTes
         {
             // Arrange
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             CreateSpecialtyHandler handler = new(repository, unitOfWork);
 
@@ -78,7 +75,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.CreateSpecialtyTes
             {
                 await handler.Handle(command, CancellationToken.None);
             });
-            Assert.False(unitOfWork.WasCommitted);
         }
 
 

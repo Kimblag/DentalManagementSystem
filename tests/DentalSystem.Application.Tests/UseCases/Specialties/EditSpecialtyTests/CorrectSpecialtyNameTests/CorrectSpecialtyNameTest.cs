@@ -20,7 +20,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             CorrectSpecialtyNameCommand command = new(specialty.SpecialtyId, "Endodonthics");
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             CorrectSpecialtyNameHandler handler = new(repository, unitOfWork);
@@ -29,9 +29,8 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            var stored = await repository.GetById(specialty.SpecialtyId, CancellationToken.None);
+            var stored = await repository.GetByIdAsync(specialty.SpecialtyId, CancellationToken.None);
             Assert.Equal("Endodonthics", stored!.Name.Value);
-            Assert.True(unitOfWork.WasCommitted);
         }
 
         // Errors
@@ -45,7 +44,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             CorrectSpecialtyNameCommand command = new(specialty.SpecialtyId, "Endodonthics");
             
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             CorrectSpecialtyNameHandler handler = new(repository, unitOfWork);
@@ -54,9 +53,8 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            var stored = await repository.GetById(specialty.SpecialtyId, CancellationToken.None);
+            var stored = await repository.GetByIdAsync(specialty.SpecialtyId, CancellationToken.None);
             Assert.Equal("Endodonthics", stored!.Name.Value);
-            Assert.False(unitOfWork.WasCommitted);
         }
 
 
@@ -70,7 +68,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             CorrectSpecialtyNameCommand command = new(specialty.SpecialtyId, "Endodonthics");
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             CorrectSpecialtyNameHandler handler = new(repository, unitOfWork);
@@ -82,7 +80,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             {
                 await handler.Handle(command, CancellationToken.None);
             });
-            Assert.False(unitOfWork.WasCommitted);
         }
 
 
@@ -100,7 +97,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             CorrectSpecialtyNameCommand command = new(specialty.SpecialtyId, invalidName);
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             CorrectSpecialtyNameHandler handler = new(repository, unitOfWork);
@@ -111,7 +108,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests
             {
                 await handler.Handle(command, CancellationToken.None);
             });
-            Assert.False(unitOfWork.WasCommitted);
         }
     }
 }

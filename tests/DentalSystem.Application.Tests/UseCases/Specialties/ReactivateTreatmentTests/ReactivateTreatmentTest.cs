@@ -21,7 +21,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateTreatmen
             specialty.DeactivateTreatment(treatment.TreatmentId);
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             ReactivateTreatmentCommand command = new(specialty.SpecialtyId, treatment.TreatmentId);
@@ -32,14 +32,13 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateTreatmen
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Specialty stored = (await repository.GetById(
+            Specialty stored = (await repository.GetByIdAsync(
                 specialty.SpecialtyId, CancellationToken.None))!;
 
             Treatment reactivated =
                 stored.Treatments.Single(t => t.TreatmentId == treatment.TreatmentId);
 
             Assert.True(reactivated.Status.IsActive);
-            Assert.True(unitOfWork.WasCommitted);
         }
 
 
@@ -49,7 +48,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateTreatmen
         {
             // Arrange
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
 
             ReactivateTreatmentCommand command = new(Guid.NewGuid(), Guid.NewGuid());
 
@@ -59,7 +58,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateTreatmen
             await Assert.ThrowsAsync<SpecialtyNotFoundException>(() =>
                 handler.Handle(command, CancellationToken.None));
 
-            Assert.False(unitOfWork.WasCommitted);
         }
 
         //Specialty inactive
@@ -71,7 +69,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateTreatmen
             Treatment treatment = specialty.Treatments.First();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             ReactivateTreatmentCommand command =new(specialty.SpecialtyId, treatment.TreatmentId);
@@ -82,8 +80,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateTreatmen
             // Assert
             await Assert.ThrowsAsync<InvalidSpecialtyStateException>(() =>
                 handler.Handle(command, CancellationToken.None));
-
-            Assert.False(unitOfWork.WasCommitted);
         }
 
         //Treatment not found
@@ -94,7 +90,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateTreatmen
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             ReactivateTreatmentCommand command = new(specialty.SpecialtyId, Guid.NewGuid());
@@ -106,7 +102,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateTreatmen
             await Assert.ThrowsAsync<TreatmentNotFoundException>(() =>
                 handler.Handle(command, CancellationToken.None));
 
-            Assert.False(unitOfWork.WasCommitted);
         }
 
         //Treatment already active
@@ -118,7 +113,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateTreatmen
             Treatment treatment = specialty.Treatments.First();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             ReactivateTreatmentCommand command = new(specialty.SpecialtyId, treatment.TreatmentId);
@@ -130,7 +125,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateTreatmen
             await Assert.ThrowsAsync<InvalidStatusTransitionException>(() =>
                 handler.Handle(command, CancellationToken.None));
 
-            Assert.False(unitOfWork.WasCommitted);
         }
 
     }

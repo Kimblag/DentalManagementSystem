@@ -12,18 +12,18 @@ namespace DentalSystem.Application.UseCases.Specialties.DeactivateTreatment
         public async Task Handle(DeactivateTreatmentCommand command, CancellationToken cancellationToken)
         {
             // Search the specialty
-            var specialty = await _repository.GetById(command.SpecialtyId, cancellationToken)
+            var specialty = await _repository.GetByIdAsync(command.SpecialtyId, cancellationToken)
                ?? throw new SpecialtyNotFoundException();
 
            // deactivate
             specialty.DeactivateTreatment(command.TreatmentId);
 
             // save the change
-            await _repository.Save(specialty, cancellationToken);
+            _repository.Add(specialty);
 
             if (_unitOfWork.HasChanges())
             {
-                _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
             }
         }
     }

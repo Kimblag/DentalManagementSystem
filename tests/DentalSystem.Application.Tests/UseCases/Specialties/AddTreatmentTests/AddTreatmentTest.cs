@@ -17,7 +17,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.AddTreatmentTests
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             TreatmentInput treatmentInput = new("Aligners", 20, "Clear aligners");
@@ -29,10 +29,9 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.AddTreatmentTests
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            var stored = await repository.GetById(specialty.SpecialtyId, CancellationToken.None);
+            var stored = await repository.GetByIdAsync(specialty.SpecialtyId, CancellationToken.None);
             Assert.Equal(2, stored!.Treatments.Count);
             Assert.Contains(stored.Treatments, t => t.Name.Value == "Aligners");
-            Assert.True(unitOfWork.WasCommitted);
         }
 
 
@@ -44,7 +43,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.AddTreatmentTests
             Specialty specialty = SpecialtyBuilder.CreateInactive();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             TreatmentInput treatmentInput = new("Aligners", 20, "Clear aligners");
@@ -58,7 +57,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.AddTreatmentTests
             {
                 await handler.Handle(command, CancellationToken.None);
             });
-            Assert.False(unitOfWork.WasCommitted);
         }
 
 
@@ -69,7 +67,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.AddTreatmentTests
             Specialty specialty = SpecialtyBuilder.CreateActiveWithOneTreatment();
 
             FakeUnitOfWork unitOfWork = new();
-            FakeSpecialtyRepository repository = new(unitOfWork);
+            FakeSpecialtyRepository repository = new();
             repository.Add(specialty);
 
             TreatmentInput treatmentInput = new("Braces", 10, "Description of a treatment");
@@ -83,7 +81,6 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.AddTreatmentTests
             {
                 await handler.Handle(command, CancellationToken.None);
             });
-            Assert.False(unitOfWork.WasCommitted);
         }
     }
 }

@@ -12,17 +12,17 @@ namespace DentalSystem.Application.UseCases.Specialties.EditTreatment.ChangeTrea
         public async Task Handle(ChangeTreatmentCostCommand command, CancellationToken cancellationToken)
         {
             // Search the specialty
-            var specialty = await _repository.GetById(command.SpecialtyId, cancellationToken)
+            var specialty = await _repository.GetByIdAsync(command.SpecialtyId, cancellationToken)
                ?? throw new SpecialtyNotFoundException();
 
             specialty.ChangeTreatmentBaseCost(command.TreatmentId, command.BaseCost);
 
             // save the change
-            await _repository.Save(specialty, cancellationToken);
+            _repository.Add(specialty);
 
             if (_unitOfWork.HasChanges())
             {
-                _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
             }
         }
     }
