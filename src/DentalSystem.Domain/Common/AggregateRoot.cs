@@ -2,11 +2,18 @@
 {
     public abstract class AggregateRoot
     {
-        public int Version { get; private set; } = 0;
+        private readonly List<IDomainEvent> _domainEvents = new();
 
-        protected void MarkAsModified()
+        public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
+
+        protected void AddDomainEvent(IDomainEvent domainEvent)
         {
-            Version++;
+            _domainEvents.Add(domainEvent);
+        }
+
+        public void ClearDomainEvents()
+        {
+            _domainEvents.Clear();
         }
     }
 }

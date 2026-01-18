@@ -63,28 +63,28 @@ namespace DentalSystem.Domain.Entities
                 return;
 
             Name = newName;
-            MarkAsModified();
+            
         }
 
         public void UpdateDescription(string? rawDescription)
         {
             EnsureActive();
             Description = rawDescription is null ? null : new Description(rawDescription);
-            MarkAsModified();
+            
         }
 
         public void Deactivate()
         {
             Status = Status.Deactivate();
             _treatments.ForEach(t => t.Deactivate());
-            MarkAsModified();
+            
         }
 
         public void Reactivate()
         {
             Status = Status.Reactivate();
             _treatments.ForEach(t => t.Reactivate());
-            MarkAsModified();
+            
         }
 
 
@@ -94,7 +94,7 @@ namespace DentalSystem.Domain.Entities
         {
             EnsureActive();
             AddTreatmentInternal(name, baseCost, description);
-            MarkAsModified();
+            
         }
 
         public void CorrectTreatmentName(Guid treatmentId, string rawName)
@@ -109,8 +109,8 @@ namespace DentalSystem.Domain.Entities
 
             treatment.CorrectName(rawName);
 
-            if (!previousName.Equals(treatment.Name))
-                MarkAsModified();
+           
+                
         }
 
         public void ChangeTreatmentBaseCost(Guid treatmentId, decimal newBaseCost)
@@ -120,9 +120,7 @@ namespace DentalSystem.Domain.Entities
             var previousCost = treatment.BaseCost;
 
             treatment.ChangeBaseCost(newBaseCost);
-
-            if (previousCost != treatment.BaseCost)
-                MarkAsModified();
+                
         }
 
         public void UpdateTreatmentDescription(Guid treatmentId, string? rawDescription)
@@ -133,8 +131,8 @@ namespace DentalSystem.Domain.Entities
 
             treatment.UpdateDescription(rawDescription);
 
-            if (!Equals(previousDescription, treatment.Description))
-                MarkAsModified();
+      
+                
         }
 
         public void DeactivateTreatment(Guid treatmentId)
@@ -147,7 +145,7 @@ namespace DentalSystem.Domain.Entities
                 throw new MinimumSpecialtyTreatmentsException();
 
             treatment.Deactivate();
-            MarkAsModified();
+            
         }
 
         public void ReactivateTreatment(Guid treatmentId)
@@ -156,7 +154,7 @@ namespace DentalSystem.Domain.Entities
 
             Treatment treatment = GetInactiveTreatmentForReactivation(treatmentId);
             treatment.Reactivate();
-            MarkAsModified();
+            
         }
 
 
