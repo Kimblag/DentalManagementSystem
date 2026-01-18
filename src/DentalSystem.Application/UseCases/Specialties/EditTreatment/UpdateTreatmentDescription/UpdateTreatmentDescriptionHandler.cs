@@ -16,13 +16,7 @@ namespace DentalSystem.Application.UseCases.Specialties.EditTreatment.UpdateTrea
 
             specialty.UpdateTreatmentDescription(command.TreatmentId, command.Description);
 
-            _repository.Add(specialty);
-
-
-            if (_unitOfWork.HasChanges())
-            {
-                await _unitOfWork.CommitAsync();
-            }
+            await _unitOfWork.CommitAsync();
         }
     }
 }

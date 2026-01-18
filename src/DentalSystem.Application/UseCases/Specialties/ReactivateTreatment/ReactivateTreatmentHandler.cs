@@ -19,12 +19,7 @@ namespace DentalSystem.Application.UseCases.Specialties.ReactivateTreatment
             specialty.ReactivateTreatment(command.TreatmentId);
 
             // save the change
-            _repository.Add(specialty);
-
-            if (_unitOfWork.HasChanges())
-            {
-                await _unitOfWork.CommitAsync();
-            }
+            await _unitOfWork.CommitAsync();
         }
     }
 }

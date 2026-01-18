@@ -17,14 +17,8 @@ namespace DentalSystem.Application.UseCases.Specialties.DeactivateSpecialty
 
             // Ask to domain to deactivate the specialty
             specialty.Deactivate();
-
-            // Save the new state
-            _repository.Add(specialty);
-
-            if (_unitOfWork.HasChanges())
-            {
-                await _unitOfWork.CommitAsync();
-            }
+            
+            await _unitOfWork.CommitAsync();
         }
     }
 }

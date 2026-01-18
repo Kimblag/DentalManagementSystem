@@ -18,12 +18,7 @@ namespace DentalSystem.Application.UseCases.Specialties.EditTreatment.ChangeTrea
             specialty.ChangeTreatmentBaseCost(command.TreatmentId, command.BaseCost);
 
             // save the change
-            _repository.Add(specialty);
-
-            if (_unitOfWork.HasChanges())
-            {
-                await _unitOfWork.CommitAsync();
-            }
+            await _unitOfWork.CommitAsync();
         }
     }
 }

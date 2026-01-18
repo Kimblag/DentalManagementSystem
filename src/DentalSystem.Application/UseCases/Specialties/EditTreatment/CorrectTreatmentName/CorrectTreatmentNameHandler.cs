@@ -16,12 +16,7 @@ namespace DentalSystem.Application.UseCases.Specialties.EditTreatment.CorrectTre
 
             specialty.CorrectTreatmentName(command.TreatmentId, command.Name);
 
-            _repository.Add(specialty);
-
-            if (_unitOfWork.HasChanges())
-            {
-                await _unitOfWork.CommitAsync();
-            }
+            await _unitOfWork.CommitAsync();
         }
     }
 }

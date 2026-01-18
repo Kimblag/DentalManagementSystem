@@ -18,13 +18,7 @@ namespace DentalSystem.Application.UseCases.Specialties.DeactivateTreatment
            // deactivate
             specialty.DeactivateTreatment(command.TreatmentId);
 
-            // save the change
-            _repository.Add(specialty);
-
-            if (_unitOfWork.HasChanges())
-            {
-                await _unitOfWork.CommitAsync();
-            }
+            await _unitOfWork.CommitAsync();
         }
     }
 }

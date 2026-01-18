@@ -18,13 +18,7 @@ namespace DentalSystem.Application.UseCases.Specialties.ReactivateSpecialty
             // Ask to domain to reactivate the specialty
             specialty.Reactivate();
 
-            // Save the new state
-            _repository.Add(specialty);
-
-            if (_unitOfWork.HasChanges())
-            {
-                await _unitOfWork.CommitAsync();
-            }
+            await _unitOfWork.CommitAsync();
         }
     }
 }
