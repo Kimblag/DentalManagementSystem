@@ -1,155 +1,118 @@
-# Specialty Repository - Integration Test Scenarios (Ultra-Detailed)
+# Specialty Repository – Integration Test Scenarios (Corrected & Aligned)
 
 ## Context
-- Integration tests for `SpecialtyRepository` and `UnitOfWork` using the real DbContext.
-- Focus on verifying:
-  - EF Core mappings
-  - Foreign key relationships
-  - Check constraints
-  - Cascade behaviors
-  - Tracking and commit behavior
-- Domain rules are **assumed correct** (covered by domain unit tests).
+
+Integration tests for `SpecialtyRepository` and `UnitOfWork` using the real `DentalSystemDbContext`.
+
+These tests verify **infrastructure behavior only**, specifically:
+
+- EF Core mappings
+- Owned Value Object persistence
+- Backing field configuration
+- Foreign key relationships
+- Cascade delete behavior
+- Change tracking and commit behavior
+
+### Explicit Non-Goals
+
+The following are **NOT** tested here:
+
+- Domain invariants (lengths, costs, uniqueness, business rules)
+- Validation logic
+- Aggregate consistency rules
+
+All domain rules are assumed correct and covered by **domain unit tests**.
+
+Each test runs against an **isolated in-memory SQLite database**.
 
 ---
 
 ## 1. Add Specialty with Treatments
-**Scenario:** Insert a new Specialty with multiple treatments
 
-**Arrange**
-- Create a Specialty object in memory:
+**Scenario:** Persist a new Specialty aggregate with multiple Treatments.
+
+### Arrange
+- Create a `Specialty` aggregate in memory:
   - Name = "General Dentistry"
   - Description = "Basic dental treatments"
-  - Treatments = ["Cleaning" (BaseCost=50), "Check-up" (BaseCost=30)]
-- Prepare a fresh DbContext configured in-memory
-- Initialize a UnitOfWork with this context
-- Prepare the SpecialtyRepository with this context
+  - Treatments:
+    - "Cleaning" (BaseCost = 50)
+    - "Check-up" (BaseCost = 30)
+- Create a fresh in-memory SQLite connection
+- Create a DbContext and ensure database creation
+- Initialize `SpecialtyRepository` and `UnitOfWork`
 
-**Act**
-- Add the Specialty to the repository
-- Commit via UnitOfWork
+### Act
+- Add the Specialty via the repository
+- Commit via `UnitOfWork`
 
-**Assert**
-- The Specialty is present in the database
-- The Specialty has the correct Name and Description
-- Each Treatment exists with:
-  - Correct Name
+### Assert
+- The Specialty row exists in the database
+- Name and Description are correctly persisted
+- Treatments are persisted as separate rows
+- Each Treatment has:
+  - Correct Name value
   - Correct BaseCost
-  - Correct Description
+  - Correct Description value (if present)
 - Treatments are linked via `SpecialtyId` foreign key
-- All EF Core constraints are satisfied:
-  - Specialty Name length >= 3
-  - Description length >= 3
-  - BaseCost >= 0
+- No exceptions are thrown during persistence
 
 ---
 
 ## 2. Retrieve Specialty by Id (Including Treatments)
-**Scenario:** Fetch Specialty with all related treatments
 
-**Arrange**
-- Persist a Specialty with multiple treatments using the DbContext
-- Ensure each Treatment has meaningful values
-- Initialize the repository and UnitOfWork
+**Scenario:** Retrieve a Specialty aggregate with its Treatments.
 
-**Act**
-- Call `GetByIdAsync` with the Specialty's ID
+### Arrange
+- Persist a Specialty with multiple Treatments using the DbContext
+- Create a new DbContext instance using the same connection
+- Initialize the repository
 
-**Assert**
-- Specialty is returned, not null
-- Specialty Name and Description match persisted values
-- All active Treatments are returned
-- Each Treatment has correct values (Name, BaseCost, Description)
-- EF Core navigation ensures `_treatments` collection matches database
+### Act
+- Call `GetByIdAsync` with the Specialty ID
 
----
-
-## 3. Enforce Check Constraints
-**Scenario:** Ensure EF Core and DB constraints are applied
-
-**Arrange**
-- Prepare invalid Specialty/Treatment objects:
-  - Name shorter than 3 characters
-  - Description shorter than 3 characters
-  - BaseCost negative
-- Use a fresh DbContext
-
-**Act**
-- Attempt to add invalid objects and commit
-
-**Assert**
-- The DbContext throws a persistence exception (e.g., DbUpdateException)
-- Database state remains unchanged (no partial inserts)
-- Verify constraints prevent invalid data
+### Assert
+- A Specialty is returned (not null)
+- Name and Description match persisted values
+- Treatments collection is populated
+- All persisted Treatments are loaded
+- Owned Value Objects are correctly materialized
+- Backing field (`_treatments`) is used, not the public property
+- No lazy loading is required
 
 ---
 
-## 4. Cascade Delete Specialty
-**Scenario:** Deleting a Specialty deletes its Treatments
+## 3. Cascade Delete Specialty
 
-**Arrange**
+**Scenario:** Deleting a Specialty deletes all associated Treatments.
+
+### Arrange
 - Persist a Specialty with multiple Treatments
-- Record SpecialtyId and TreatmentIds
+- Store the SpecialtyId
+- Create a new DbContext instance
 - Initialize repository and UnitOfWork
 
-**Act**
+### Act
 - Delete the Specialty
 - Commit via UnitOfWork
 
-**Assert**
-- Specialty no longer exists in database
-- All Treatments linked to SpecialtyId are deleted
-- Foreign keys are clean (no orphaned rows)
-- Cascade behavior works as configured in EF Core
+### Assert
+- The Specialty no longer exists in the database
+- No Treatment rows exist with the deleted `SpecialtyId`
+- Cascade delete behavior works as configured in EF Core
+- No orphaned rows remain
 
----
-
-## 5. UnitOfWork Commit Behavior
-**Scenario:** Verify commit saves all tracked changes
-
-**Arrange**
-- Make multiple changes in DbContext:
-  - Add new Specialty
-  - Modify an existing Treatment
-  - Delete another Treatment
-- Initialize UnitOfWork with this context
-
-**Act**
-- Check `HasChanges()` returns true
-- Commit changes via `CommitAsync`
-- Check `HasChanges()` returns false
-
-**Assert**
-- All changes are correctly persisted in database
-- No uncommitted changes remain
-- Confirm all relationships, foreign keys, and constraints are valid after commit
-
----
-
-## 6. Concurrency and Tracking
-**Scenario:** Verify EF Core tracking and concurrency
-
-**Arrange**
-- Load the same Specialty in two separate DbContext instances
-- Make different changes in each context
-- Use UnitOfWork for each context
-
-**Act**
-- Commit the first context
-- Commit the second context
-
-**Assert**
-- First commit persists correctly
-- Second commit either:
-  - Updates correctly if no concurrency token is configured
-  - Throws concurrency exception if versioning/concurrency token is configured
-- Verify `Version` property increments after each commit if used
-- Database reflects latest valid values
-- Previous contexts still have old values until refreshed
 
 ---
 
 ## Notes
-- Each test must run on an isolated in-memory database to avoid cross-test pollution
-- Use `DbContextOptionsBuilder` to configure the test database
-- Tests focus on **EF Core behavior**, **relationships**, **constraints**, and **UnitOfWork commit behavior**
-- No domain logic validation is done here; those are already verified in domain unit tests
+
+- Each test uses a **shared SQLite in-memory connection** but **separate DbContext instances**
+- `EnsureCreated()` is executed once per connection
+- No database-level validation or business rules are enforced
+- EF Core is treated as:
+  - A persistence mechanism
+  - A relationship mapper
+  - A transaction boundary
+
+Domain correctness is **explicitly outside the scope** of these tests.
