@@ -10,12 +10,12 @@ namespace DentalSystem.Application.UseCases.Specialties.EditTreatment.CorrectTre
 
         public CorrectTreatmentNameCommand(Guid specialtyId, Guid treatmentId, string name)
         {
-            if (specialtyId == Guid.Empty || treatmentId == Guid.Empty || string.IsNullOrEmpty(name))
-                throw new ArgumentException("SpecialtyID, TreatmentId and Name cannot be empty");
+            if (specialtyId == Guid.Empty || treatmentId == Guid.Empty)
+                throw new ArgumentException("SpecialtyID, TreatmentId cannot be empty");
 
+            Name = name ?? throw new ArgumentNullException(nameof(name));
             SpecialtyId = specialtyId;
             TreatmentId = treatmentId;
-            Name = name;
         }
     }
 }

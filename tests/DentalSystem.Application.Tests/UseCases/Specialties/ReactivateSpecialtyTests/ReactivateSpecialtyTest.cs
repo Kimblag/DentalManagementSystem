@@ -23,10 +23,10 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateSpecialt
             
             repository.Add(specialty);
 
-            var handler = new ReactivateSpecialtyHandler(repository, unitOfWork);
-
+            ReactivateSpecialtyHandler handler = new(repository, unitOfWork);
+            ReactivateSpecialtyCommand command = new(specialty.SpecialtyId);
             // Act
-            await handler.Handle(specialty.SpecialtyId, CancellationToken.None);
+            await handler.Handle(command, CancellationToken.None);
 
             // Assert
             var stored = await repository.GetByIdAsync(specialty.SpecialtyId, CancellationToken.None);
@@ -53,12 +53,13 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.ReactivateSpecialt
 
             repository.Add(specialty);
             var handler = new ReactivateSpecialtyHandler(repository, unitOfWork);
+            ReactivateSpecialtyCommand command = new(specialty.SpecialtyId);
 
             // Act
             // Assert
             await Assert.ThrowsAnyAsync<InvalidStatusTransitionException>(async () =>
             {
-                await handler.Handle(specialty.SpecialtyId, CancellationToken.None);
+                await handler.Handle(command, CancellationToken.None);
             });
         }
     }

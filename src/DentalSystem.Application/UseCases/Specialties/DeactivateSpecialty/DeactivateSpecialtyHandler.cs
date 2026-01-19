@@ -9,10 +9,10 @@ namespace DentalSystem.Application.UseCases.Specialties.DeactivateSpecialty
         private readonly ISpecialtyRepository _repository = repository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-        public async Task Handle(Guid specialtyId, CancellationToken cancellationToken)
+        public async Task Handle(DeactivateSpecialtyCommand command, CancellationToken cancellationToken)
         {
             // Get the specialty
-            var specialty = await _repository.GetByIdAsync(specialtyId, cancellationToken) 
+            var specialty = await _repository.GetByIdAsync(command.SpecialtyId, cancellationToken) 
                 ?? throw new SpecialtyNotFoundException();
 
             // Ask to domain to deactivate the specialty

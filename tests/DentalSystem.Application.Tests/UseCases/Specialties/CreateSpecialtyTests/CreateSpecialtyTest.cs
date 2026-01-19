@@ -1,4 +1,5 @@
-﻿using DentalSystem.Application.Tests.Fakes.Persistence;
+﻿using DentalSystem.Application.Contracts.Specialties;
+using DentalSystem.Application.Tests.Fakes.Persistence;
 using DentalSystem.Application.Tests.Fakes.Repositories.Specialties;
 using DentalSystem.Application.UseCases.Specialties.CreateSpecialty;
 using DentalSystem.Domain.Exceptions.Specialties;

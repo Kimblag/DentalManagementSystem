@@ -1,4 +1,6 @@
-﻿namespace DentalSystem.Application.UseCases.Specialties.AddTreatment
+﻿using DentalSystem.Application.Contracts.Specialties;
+
+namespace DentalSystem.Application.UseCases.Specialties.AddTreatment
 {
     public sealed class AddTreatmentCommand
     {

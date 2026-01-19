@@ -1,4 +1,6 @@
-﻿namespace DentalSystem.Application.UseCases.Specialties.CreateSpecialty
+﻿using DentalSystem.Application.Contracts.Specialties;
+
+namespace DentalSystem.Application.UseCases.Specialties.CreateSpecialty
 {
     public sealed class CreateSpecialtyCommand
     {
@@ -10,7 +12,7 @@
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Description = description;
-            Treatments = treatments;
+            Treatments = treatments ?? throw new ArgumentNullException(nameof(treatments));
         }
     }
 }

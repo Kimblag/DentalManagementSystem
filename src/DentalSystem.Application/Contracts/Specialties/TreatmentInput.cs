@@ -1,4 +1,4 @@
-﻿namespace DentalSystem.Application.UseCases.Specialties.CreateSpecialty
+﻿namespace DentalSystem.Application.Contracts.Specialties
 {
     public sealed class TreatmentInput
     {

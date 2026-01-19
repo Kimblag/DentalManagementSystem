@@ -25,8 +25,9 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateSpecialt
 
             DeactivateSpecialtyHandler handler = new(repository, unitOfWork);
 
+            DeactivateSpecialtyCommand command = new(specialty.SpecialtyId);
             // Act
-            await handler.Handle(specialty.SpecialtyId, CancellationToken.None);
+            await handler.Handle(command, CancellationToken.None);
 
             // Assert
             // It must be persisted
@@ -50,12 +51,12 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateSpecialt
             FakeSpecialtyRepository repository = new();
 
             DeactivateSpecialtyHandler handler = new(repository, unitOfWork);
-
+            DeactivateSpecialtyCommand command = new(Guid.NewGuid());
             // Act
             // Assert
             await Assert.ThrowsAsync<SpecialtyNotFoundException>(async () =>
             {
-                await handler.Handle(Guid.NewGuid(), CancellationToken.None);
+                await handler.Handle(command, CancellationToken.None);
             });
         }
 
@@ -73,12 +74,12 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.DeactivateSpecialt
             repository.Add(specialty);
 
             DeactivateSpecialtyHandler handler = new(repository, unitOfWork);
-
+            DeactivateSpecialtyCommand command = new(specialty.SpecialtyId);
             // Act
             // Assert
             await Assert.ThrowsAsync<InvalidStatusTransitionException>(async () =>
             {
-                await handler.Handle(specialty.SpecialtyId, CancellationToken.None);
+                await handler.Handle(command, CancellationToken.None);
             });
         }
     }
