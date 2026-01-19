@@ -6,12 +6,10 @@ namespace DentalSystem.Infrastructure.Tests.Helpers
 {
     public static class DbContextHelper
     {
-        public static (DentalSystemDbContext cotext, SqliteConnection connection) CreateDbContext()
+        public static DentalSystemDbContext CreateDbContext(
+            SqliteConnection connection,
+            bool ensureCreated = false)
         {
-            // Creates connection SQLite in memory
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-
             // configure db context options using connection
             var options = new DbContextOptionsBuilder<DentalSystemDbContext>()
                 .UseSqlite(connection)
@@ -22,10 +20,18 @@ namespace DentalSystem.Infrastructure.Tests.Helpers
 
 
             // Ensure that database is created with mappings and constraints
-            context.Database.EnsureCreated();
+            if(ensureCreated)
+                context.Database.EnsureCreated();
 
 
-            return (context, connection);
+            return context;
+        }
+
+        public static SqliteConnection CreateInMemoryConnection()
+        {
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+            return connection;
         }
     }
 }

@@ -17,10 +17,11 @@ namespace DentalSystem.Infrastructure.Persistence.Repositories.Specialties
         public async Task<Specialty?> GetByIdAsync(Guid specialtyId, CancellationToken cancellationToken = default)
         {
             return await _context.Set<Specialty>()
-                .Include("_treatments") // indicates to include its treatments (backing field, not public navigation)
+                .Include(s => s.Treatments) // indicates to include its treatments (backing field, not public navigation)
                 .FirstOrDefaultAsync(
                     s => s.SpecialtyId == specialtyId, 
                     cancellationToken);
         }
+
     }
 }

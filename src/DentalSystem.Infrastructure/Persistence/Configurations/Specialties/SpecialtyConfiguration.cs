@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DentalSystem.Infrastructure.Persistence.Configurations.Specialties
 {
-    internal class SpecialtyConfiguration : IEntityTypeConfiguration<Specialty>
+    public sealed class SpecialtyConfiguration : IEntityTypeConfiguration<Specialty>
     {
         public void Configure(EntityTypeBuilder<Specialty> builder)
         {
@@ -14,6 +14,7 @@ namespace DentalSystem.Infrastructure.Persistence.Configurations.Specialties
             builder.HasKey(s => s.SpecialtyId);
             builder.Property(s => s.SpecialtyId).ValueGeneratedNever();
 
+
             // Map ValueObjects
             builder.OwnsOne(s => s.Name, name =>
             {
@@ -21,10 +22,13 @@ namespace DentalSystem.Infrastructure.Persistence.Configurations.Specialties
                 .HasColumnName("Name")
                 .HasMaxLength(100)
                 .IsRequired();
+
+                // because Name is a Owned type, we use the name of the column directly
+                name.HasIndex(n => n.Value)
+                .IsUnique();
             });
 
-            builder.HasIndex(s => s.Name.Value)
-                .IsUnique();
+            
 
             builder.OwnsOne(s => s.Description, description =>
             {
@@ -41,25 +45,19 @@ namespace DentalSystem.Infrastructure.Persistence.Configurations.Specialties
                 .IsRequired();
             });
 
+
+            // First, let me point out that this navigation uses this
+            // backing field and not the property, otherwise it gives
+            // an error because it tries to map the other Treatments property 
+            builder.Metadata
+                .FindNavigation(nameof(Specialty.Treatments))!
+                .SetPropertyAccessMode(PropertyAccessMode.Field);
+
             // Relationships 1 specialty has many treatments 1...n
-            builder.HasMany(typeof(Treatment), "_treatments")
+            builder.HasMany(s => s.Treatments)
                 .WithOne() // each treatment is asociated to only one specialty, I do not expose this relation because it breaks the aggregate
                 .HasForeignKey("SpecialtyId")
                 .OnDelete(DeleteBehavior.Cascade);
-
-            builder.ToTable(tb =>
-            {
-                tb.HasCheckConstraint(
-                    "CK_Specialty_Description_Length",
-                    "[Description] IS NULL OR LEN([Description]) >= 3"
-                );
-                tb.HasCheckConstraint(
-                   "CK_Specialty_Name_Length",
-                   "LEN([Name]) >= 3"
-               );
-            });
-
-
         }
     }
 }

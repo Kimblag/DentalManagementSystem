@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DentalSystem.Infrastructure.Persistence.Configurations.Specialties
 {
-    internal class TreatmentConfiguration : IEntityTypeConfiguration<Treatment>
+    public sealed class TreatmentConfiguration : IEntityTypeConfiguration<Treatment>
     {
         public void Configure(EntityTypeBuilder<Treatment> builder)
         {
@@ -22,14 +22,6 @@ namespace DentalSystem.Infrastructure.Persistence.Configurations.Specialties
                 .HasMaxLength(100)
                 .IsRequired();
             });
-
-            // Composite index.
-            // The treatment name is unique within a specialty.
-            builder.HasIndex(t => new { 
-                SpecialtyId = EF.Property<Guid>(t, "SpecialtyId"), 
-                Name = t.Name.Value 
-            }).IsUnique();
-
 
             builder.OwnsOne(s => s.Description, description =>
             {
@@ -52,22 +44,6 @@ namespace DentalSystem.Infrastructure.Persistence.Configurations.Specialties
                 .HasPrecision(10, 2)
                 .IsRequired();
 
-            builder.ToTable(tb =>
-            {
-                tb.HasCheckConstraint(
-                    "CK_Treatment_Description_Length",
-                    "[Description] IS NULL OR LEN([Description]) >= 3"
-                );
-
-                tb.HasCheckConstraint(
-                    "CK_Treatment_Name_Length",
-                    "LEN([Name]) >= 3"
-                );
-
-                tb.HasCheckConstraint(
-                    "CK_Treatment_BaseCost_Positive",
-                    "[BaseCost] >= 0");
-            });
         }
     }
 }
