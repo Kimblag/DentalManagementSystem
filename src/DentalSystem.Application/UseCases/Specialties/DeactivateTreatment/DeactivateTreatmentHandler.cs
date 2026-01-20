@@ -1,5 +1,4 @@
 ﻿using DentalSystem.Application.Exceptions;
-using DentalSystem.Application.Exceptions.Specialties;
 using DentalSystem.Application.Ports.Persistence;
 using DentalSystem.Application.Ports.Repositories;
 

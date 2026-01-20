@@ -1,29 +1,17 @@
-﻿using Azure;
-using DentalSystem.Application.Exceptions;
+﻿using DentalSystem.Application.Exceptions;
 using DentalSystem.Domain.Exceptions;
 using DentalSystem.Domain.Exceptions.Rules;
 using DentalSystem.Domain.Exceptions.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.ConstrainedExecution;
 
 namespace DentalSystem.Api.Middleware
 {
-    public class ExceptionHandlingMiddleware
-    {
-        private readonly RequestDelegate _next;
-
-        // TODO: If we use loggers, we need to create the property here
-        //private readonly ILogger<> _logger;
-
-        public ExceptionHandlingMiddleware(
-            RequestDelegate next
+    public class ExceptionHandlingMiddleware(
+        RequestDelegate next
             //ILogger<> logger
             )
-        {
-            _next = next;
-            //_logger = logger;
-        }
-
+    {
+        private readonly RequestDelegate _next = next;
 
         public async Task InvokeAsync(HttpContext context)
         {
