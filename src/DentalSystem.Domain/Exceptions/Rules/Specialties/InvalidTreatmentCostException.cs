@@ -1,6 +1,6 @@
-﻿namespace DentalSystem.Domain.Exceptions.Specialties
+﻿namespace DentalSystem.Domain.Exceptions.Rules.Specialties
 {
-    public class InvalidTreatmentCostException : DomainException
+    public sealed class InvalidTreatmentCostException : DomainException
     {
         private const string defaultMessage = "Cost cannot be negative";
 

@@ -14,10 +14,7 @@ namespace DentalSystem.Infrastructure.Persistence
         // 2. constructor using DbContextOptions -> is the configuration already built. (inmutable)
         // DO NOT confuse with DbContextOptionsBuilder -> tool for build the configuration. (mutable)
         public DentalSystemDbContext(DbContextOptions<DentalSystemDbContext> options)
-            : base(options)
-        {
-            
-        }
+            : base(options){ }
 
         //It's the place where EF learns what my model is like. OnModelCreating = object mapping → database
         protected override void OnModelCreating(ModelBuilder modelBuilder)

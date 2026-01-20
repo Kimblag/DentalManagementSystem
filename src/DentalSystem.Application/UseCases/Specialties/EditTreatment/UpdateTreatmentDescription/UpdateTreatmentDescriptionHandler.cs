@@ -1,4 +1,5 @@
 ﻿using DentalSystem.Application.Exceptions;
+using DentalSystem.Application.Exceptions.Specialties;
 using DentalSystem.Application.Ports.Persistence;
 using DentalSystem.Application.Ports.Repositories;
 
@@ -11,8 +12,9 @@ namespace DentalSystem.Application.UseCases.Specialties.EditTreatment.UpdateTrea
 
         public async Task Handle(UpdateTreatmentDescriptionCommand command, CancellationToken cancellationToken)
         {
-            var specialty = await _repository.GetByIdAsync(command.SpecialtyId, cancellationToken) ??
-                throw new SpecialtyNotFoundException();
+            var specialty = await _repository.GetByIdAsync(command.SpecialtyId, cancellationToken)
+                ?? throw new NotFoundException("Specialty",
+                $"Specialty with id {command.SpecialtyId} was not found.");
 
             specialty.UpdateTreatmentDescription(command.TreatmentId, command.Description);
 

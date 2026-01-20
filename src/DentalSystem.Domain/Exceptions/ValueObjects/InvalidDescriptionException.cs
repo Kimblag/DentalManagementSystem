@@ -1,6 +1,6 @@
 ﻿namespace DentalSystem.Domain.Exceptions.ValueObjects
 {
-    public class InvalidDescriptionException : DomainException
+    public sealed class InvalidDescriptionException : ValueObjectException
     {
 
         private const string defaultMessage = "The provided description is invalid.";

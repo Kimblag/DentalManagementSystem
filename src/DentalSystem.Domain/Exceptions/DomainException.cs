@@ -1,21 +1,21 @@
 ﻿namespace DentalSystem.Domain.Exceptions
 {
-    public class DomainException : Exception
+    public abstract class DomainException : Exception
     {
-        public DomainException()
+        protected DomainException()
         {
                 
         }
 
 
-        public DomainException(string message)
+        protected DomainException(string message)
             : base(message)
         {
             
         }
 
 
-        public DomainException(string message, Exception inner)
+        protected DomainException(string message, Exception inner)
             : base(message, inner)
         {
             

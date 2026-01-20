@@ -1,6 +1,6 @@
 ﻿namespace DentalSystem.Domain.Exceptions.ValueObjects
 {
-    public class InvalidNameException : DomainException
+    public sealed class InvalidNameException : ValueObjectException
     {
         private const string defaultMessage = "The provided name is invalid.";
 

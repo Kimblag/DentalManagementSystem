@@ -1,6 +1,6 @@
-﻿namespace DentalSystem.Domain.Exceptions.Specialties
+﻿namespace DentalSystem.Domain.Exceptions.Rules.Specialties
 {
-    public class TreatmentNotFoundException : DomainException
+    public sealed class TreatmentNotFoundException : DomainException
     {
 
         public TreatmentNotFoundException()

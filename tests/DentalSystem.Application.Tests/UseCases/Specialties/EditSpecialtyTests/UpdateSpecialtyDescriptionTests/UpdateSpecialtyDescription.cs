@@ -3,7 +3,7 @@ using DentalSystem.Application.Tests.Fakes.Persistence;
 using DentalSystem.Application.Tests.Fakes.Repositories.Specialties;
 using DentalSystem.Application.UseCases.Specialties.EditSpecialty.UpdateSpecialtyDescription;
 using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.Exceptions.Specialties;
+using DentalSystem.Domain.Exceptions.Rules.Specialties;
 using DentalSystem.Domain.Exceptions.ValueObjects;
 
 namespace DentalSystem.Application.Tests.UseCases.Specialties.EditSpecialtyTests.UpdateSpecialtyDescriptionTests

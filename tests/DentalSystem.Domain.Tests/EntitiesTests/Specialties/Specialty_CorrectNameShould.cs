@@ -1,6 +1,6 @@
 ﻿using DentalSystem.Domain.Entities;
 using DentalSystem.Domain.Exceptions;
-using DentalSystem.Domain.Exceptions.Specialties;
+using DentalSystem.Domain.Exceptions.Rules.Specialties;
 using DentalSystem.Domain.Tests.Builder;
 using DentalSystem.Domain.Tests.Helpers;
 using DentalSystem.Domain.ValueObjects;

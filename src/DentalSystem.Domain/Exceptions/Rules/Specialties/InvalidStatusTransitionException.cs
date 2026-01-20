@@ -1,6 +1,6 @@
-﻿namespace DentalSystem.Domain.Exceptions.Specialties
+﻿namespace DentalSystem.Domain.Exceptions.Rules.Specialties
 {
-    public class InvalidStatusTransitionException : DomainException
+    public sealed class InvalidStatusTransitionException : DomainException
     {
 
         public InvalidStatusTransitionException()

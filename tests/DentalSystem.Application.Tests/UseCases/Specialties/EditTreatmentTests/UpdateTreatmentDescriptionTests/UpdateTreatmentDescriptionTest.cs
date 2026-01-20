@@ -5,7 +5,7 @@ using DentalSystem.Application.Tests.Fakes.Repositories.Specialties;
 using DentalSystem.Application.UseCases.Specialties.EditTreatment.ChangeTreatmentCost;
 using DentalSystem.Application.UseCases.Specialties.EditTreatment.UpdateTreatmentDescription;
 using DentalSystem.Domain.Entities;
-using DentalSystem.Domain.Exceptions.Specialties;
+using DentalSystem.Domain.Exceptions.Rules.Specialties;
 using DentalSystem.Domain.Exceptions.ValueObjects;
 
 namespace DentalSystem.Application.Tests.UseCases.Specialties.EditTreatmentTests.UpdateTreatmentDescriptionTests
@@ -105,7 +105,7 @@ namespace DentalSystem.Application.Tests.UseCases.Specialties.EditTreatmentTests
 
             // Act
             // Assert
-            await Assert.ThrowsAsync<SpecialtyNotFoundException>(async () =>
+            await Assert.ThrowsAsync<NotFoundException>(async () =>
             {
                 await handler.Handle(command, CancellationToken.None);
             });
