@@ -2,24 +2,9 @@
 {
     public sealed class TreatmentNotFoundException : DomainException
     {
+        private const string DefaultMessage = "Treatment not found.";
 
         public TreatmentNotFoundException()
-        {
-            
-        }
-
-
-        public TreatmentNotFoundException(string message)
-            : base(message)
-        {
-            
-        }
-
-
-        public TreatmentNotFoundException(string message, Exception inner)
-            : base(message, inner)
-        {
-            
-        }
+            : base(DefaultMessage) { }
     }
 }

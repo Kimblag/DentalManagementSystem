@@ -44,7 +44,7 @@ namespace DentalSystem.Domain.ValueObjects
         public LifecycleStatus Deactivate()
         {
             if (!IsActive)
-                throw new InvalidStatusTransitionException("The entity is already inactive.");
+                throw new InvalidStatusTransitionException();
 
             return Inactive();
         }
@@ -58,7 +58,7 @@ namespace DentalSystem.Domain.ValueObjects
         public LifecycleStatus Reactivate()
         {
             if (IsActive)
-                throw new InvalidStatusTransitionException("The entity is already active.");
+                throw new InvalidStatusTransitionException();
 
             return Active();
         }

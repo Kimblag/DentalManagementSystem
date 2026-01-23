@@ -1,24 +1,12 @@
 ﻿namespace DentalSystem.Domain.Exceptions.Rules.Specialties
 {
-    public sealed class MinimumSpecialtyTreatmentsException : DomainException
+    public sealed class MinimumSpecialtyTreatmentsException : BusinessRuleViolationException
     {
+        private const string DefaultMessage =
+            "A specialty must have at least one active treatment.";
+
+
         public MinimumSpecialtyTreatmentsException()
-        {
-            
-        }
-
-
-        public MinimumSpecialtyTreatmentsException(string message)
-            : base(message)
-        {
-            
-        }
-
-
-        public MinimumSpecialtyTreatmentsException(string message, Exception inner)
-            : base(message, inner)
-        {
-            
-        }
+            : base(DefaultMessage) { }
     }
 }

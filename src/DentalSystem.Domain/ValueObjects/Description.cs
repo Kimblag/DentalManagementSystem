@@ -30,12 +30,12 @@ namespace DentalSystem.Domain.ValueObjects
         public Description(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new InvalidDescriptionException("Description cannot be empty.");
+                throw new InvalidDescriptionException();
 
             value = value.Trim();
 
             if (!Pattern().IsMatch(value))
-                throw new InvalidDescriptionException("Invalid description format.");
+                throw new InvalidDescriptionException();
 
             Value = value;
         }

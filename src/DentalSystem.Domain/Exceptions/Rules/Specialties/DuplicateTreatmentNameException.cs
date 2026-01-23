@@ -1,26 +1,11 @@
 ﻿namespace DentalSystem.Domain.Exceptions.Rules.Specialties
 {
-    public sealed class DuplicateTreatmentNameException : DomainException
+    public sealed class DuplicateTreatmentNameException : BusinessRuleViolationException
     {
+        private const string DefaultMessage =
+           "A treatment with the same name already exists in the specialty.";
 
         public DuplicateTreatmentNameException()
-        {
-            
-        }
-
-
-        public DuplicateTreatmentNameException(string message)
-            : base(message)
-        {
-            
-        }
-
-
-
-        public DuplicateTreatmentNameException(string message, Exception inner)
-            : base(message, inner)
-        {
-            
-        }
+            : base(DefaultMessage) { }
     }
 }

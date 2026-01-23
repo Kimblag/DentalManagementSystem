@@ -2,22 +2,10 @@
 {
     public sealed class InvalidTreatmentStateException : DomainException
     {
+        private const string DefaultMessage =
+            "The treatment is in an invalid state for this operation.";
+
         public InvalidTreatmentStateException()
-        {
-            
-        }
-
-
-        public InvalidTreatmentStateException(string message)
-            : base(message)
-        {
-            
-        }
-
-        public InvalidTreatmentStateException(string message, Exception inner)
-            : base(message, inner)
-        {
-            
-        }
+            : base(DefaultMessage) { }
     }
 }

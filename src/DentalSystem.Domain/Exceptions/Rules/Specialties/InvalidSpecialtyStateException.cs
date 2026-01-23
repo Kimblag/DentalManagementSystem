@@ -2,24 +2,10 @@
 {
     public sealed class InvalidSpecialtyStateException : DomainException
     {
+        private const string DefaultMessage =
+            "The specialty is in an invalid state for this operation.";
 
         public InvalidSpecialtyStateException()
-        {
-            
-        }
-
-
-        public InvalidSpecialtyStateException(string message)
-            : base(message)
-        {
-            
-        }
-
-
-        public InvalidSpecialtyStateException(string message, Exception inner)
-            : base(message, inner)
-        {
-            
-        }
+            : base(DefaultMessage) { }
     }
 }

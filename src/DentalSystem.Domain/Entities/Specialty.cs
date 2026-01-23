@@ -103,9 +103,12 @@ namespace DentalSystem.Domain.Entities
 
             var previousName = treatment.Name;
 
-            if (_treatments.Any(t => (t.Name.Value.Equals(rawName.Trim(), StringComparison.OrdinalIgnoreCase) 
-            && !t.Name.Value.Equals(rawName.Trim(), StringComparison.OrdinalIgnoreCase) )))
+            if (_treatments.Any(t =>
+                t.TreatmentId != treatmentId &&
+                t.Name.Value.Equals(rawName.Trim(), StringComparison.OrdinalIgnoreCase)))
+            {
                 throw new DuplicateTreatmentNameException();
+            }
 
             treatment.CorrectName(rawName);
 

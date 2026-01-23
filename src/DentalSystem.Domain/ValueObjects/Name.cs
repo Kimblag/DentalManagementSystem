@@ -23,12 +23,12 @@ namespace DentalSystem.Domain.ValueObjects
         public Name(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
-                throw new InvalidNameException("Name cannot be empty.");
+                throw new InvalidNameException();
 
             value = value.Trim();
 
             if (!NamePattern().IsMatch(value))
-                throw new InvalidNameException("Name contains invalid characters or has an invalid length.");
+                throw new InvalidNameException();
 
             Value = value;
         }

@@ -2,24 +2,11 @@
 {
     public sealed class InvalidStatusTransitionException : DomainException
     {
+        private const string DefaultMessage =
+        "The requested status transition is not allowed.";
 
         public InvalidStatusTransitionException()
-        {
-            
-        }
+            : base(DefaultMessage) { }
 
-
-        public InvalidStatusTransitionException(string message)
-            : base(message)
-        {
-            
-        }
-
-
-        public InvalidStatusTransitionException(string message, Exception inner)
-            : base(message, inner)
-        {
-            
-        }
     }
 }

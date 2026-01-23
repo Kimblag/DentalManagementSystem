@@ -2,25 +2,9 @@
 {
     public sealed class InvalidNameException : ValueObjectException
     {
-        private const string defaultMessage = "The provided name is invalid.";
+        private const string DefaultMessage = "The provided name is invalid.";
 
         public InvalidNameException()
-        {
-            
-        }
-
-
-        public InvalidNameException(string? message = null)
-            : base(message ?? defaultMessage)
-        {
-            
-        }
-
-
-        public InvalidNameException(Exception inner, string? message = null)
-            : base(message ?? defaultMessage, inner)
-        {
-            
-        }
+            : base(DefaultMessage) { }
     }
 }
