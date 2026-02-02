@@ -1,45 +1,106 @@
-# Aggregate Design – Specialties
+# Specialties (Aggregate Root)
+Representa la gestión del módulo de especialidades y su tratamiento.
 
-## Aggregate Root
-Specialty is the Aggregate Root of the Specialties module.
+## Specialty
+### Atributos
+- Id: GUID (Identidad interna de la clínica)
+- Name: VO (único en el sistema)
+- isActive: boolean (estado lógico)
+- Treatments: Collection<Treatment>
 
-## Aggregate Composition
-The Specialty aggregate is composed of:
-- Specialty (root)
-- Treatment (entity)
+### Comportamientos
+- Create(name: Name, treatments: Collection<NewTreatmentData>)
+    * Crea una especialidad con uno o más tratamientos iniciales.
+    * Los tratamientos se instancian internamente.
+    * Valida que exista al menos un tratamiento activo.
 
-A Treatment cannot exist outside a Specialty.
+- Rename(name: Name)
+    * Corrige el nombre de la especialidad.
+    * No permitido si está inactiva.
 
-## Aggregate Invariants
-The following invariants are enforced by the aggregate:
-1. A Specialty must always have at least one Treatment.
-2. A Treatment cannot belong to more than one Specialty.
-3. A Specialty cannot be modified when archived.
-4. A Treatment cannot be modified if its parent Specialty is archived or inactive.
-5. Specialty status transitions propagate to Treatments.
+- AddTreatment(data: NewTreatmentData)
+    * Agrega un tratamiento a la especialidad.
+    * No permitido si la especialidad está inactiva.
+    * Valida unicidad de nombre y código dentro de la especialidad.
 
-## Allowed Operations (Through Aggregate Root)
-The following operations can only be executed through the Specialty aggregate:
-- Add treatment
-- Remove treatment
-- Change specialty status
-- Update specialty details
-- Update treatment details
+- RenameTreatment(treatmentId: UUID, name: Name)
+    * Coordina el renombrado de un tratamiento.
+    * No permitido si la especialidad está inactiva.
 
-Direct modification of Treatment entities is not allowed.
+- ChangeTreatmentBaseCost(treatmentId: UUID, baseCost: Money)
+    * Coordina el cambio de costo base de un tratamiento.
+    * No permitido si la especialidad está inactiva.
 
-## Responsibilities
-The Specialty aggregate is responsible for:
-- Maintaining consistency between Specialty and Treatments
-- Enforcing business invariants
-- Coordinating state transitions within the aggregate
+- DeactivateTreatment(treatmentId: UUID)
+    * Coordina la desactivación de un tratamiento.
+    * No permitido si es el último tratamiento activo.
 
-## Out of Scope
-The following concerns are explicitly outside this aggregate:
-- Persistence
-- Appointment validation
-- Scheduling rules
-- Authorization and roles
+- ActivateTreatment(treatmentId: UUID)
+    * Coordina la activación de un tratamiento.
+    * No permitido si la especialidad está inactiva.
 
-## Encapsulation via Internal Visibility
-The methods ChangeStatus and UpdateDetails within the Treatment entity use internal visibility (represented by ~ in UML). This design choice ensures that the Specialty Aggregate Root is the only authorized orchestrator for these operations, preventing external layers from bypassing business invariants and enforcing the rule that all modifications must occur through the aggregate root.
+- Deactivate()
+    * Desactiva la especialidad.
+    * Desactiva todos sus tratamientos.
+
+- Activate()
+    * Reactiva la especialidad.
+    * Reactiva todos sus tratamientos.
+
+## Treatment
+- Id: UUID - Identidad interna dentro del agregado.
+- Code: string - Código del nomenclador odontológico. - Inmutable y único dentro de la especialidad.
+Name: Name (VO) Nombre del tratamiento. Único dentro de la especialidad.
+- BaseCost: Money (VO) - Costo base del tratamiento. Puede ser 0, no negativo, con moneda.
+- IsActive: boolean - Estado lógico.
+
+### Comportamientos
+- Rename(name: Name)
+    * Corrige el nombre del tratamiento.
+    * No permitido si el tratamiento está inactivo.
+
+- ChangeBaseCost(baseCost: Money)
+    * Actualiza el costo base.
+    * No permitido si el tratamiento está inactivo.
+
+- Deactivate()
+    * Desactiva el tratamiento.
+    * Solo puede ejecutarse si el agregado lo permite.
+
+- Activate()
+    * Reactiva el tratamiento.
+
+
+
+## Invariantes del agregado
+- No existe especialidad sin al menos un tratamiento activo
+- No se puede desactivar el último tratamiento activo
+- Nombre de tratamiento único dentro de la especialidad
+- Código de tratamiento único dentro de la especialidad
+- No se pueden modificar entidades inactivas
+- El código del tratamiento no se modifica
+- Tratamiento no existe fuera de Especialidad
+- Todo cambio en Tratamiento pasa por Especialidad
+
+
+## Tabla de comportamiento
+### Aggregate Root: Specialty
+| Comportamiento              | Entradas                                                   | Salida        | Excepciones                                                                      |
+| --------------------------- | ---------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------- |
+| **Create**                  | `name: Name`<br>`treatments: Collection<NewTreatmentData>` | `Specialty`   | `EmptyTreatmentList`                                                             |
+| **Rename**                  | `name: Name`                                               | `void`        | `EntityInactive`                                                                 |
+| **AddTreatment**            | `data: NewTreatmentData`                                   | `TreatmentId` | `EntityInactive`<br>`TreatmentCodeAlreadyExists`<br>`TreatmentNameAlreadyExists` |
+| **RenameTreatment**         | `treatmentId: UUID`<br>`name: Name`                        | `void`        | `EntityInactive`<br>`TreatmentNotFound`                                          |
+| **ChangeTreatmentBaseCost** | `treatmentId: UUID`<br>`baseCost: Money`                   | `void`        | `EntityInactive`<br>`TreatmentNotFound`                                          |
+| **DeactivateTreatment**     | `treatmentId: UUID`                                        | `void`        | `TreatmentNotFound`<br>`CannotRemoveLastTreatment`                               |
+| **ActivateTreatment**       | `treatmentId: UUID`                                        | `void`        | `EntityInactive`<br>`TreatmentNotFound`                                          |
+| **Deactivate**              | —                                                          | `void`        | —                                                                                |
+| **Activate**                | —                                                          | `void`        | —                                                                                |
+
+### Treatment
+| Comportamiento     | Entradas          | Salida | Excepciones      |
+| ------------------ | ----------------- | ------ | ---------------- |
+| **Rename**         | `name: Name`      | `void` | `EntityInactive` |
+| **ChangeBaseCost** | `baseCost: Money` | `void` | `EntityInactive` |
+| **Deactivate**     | —                 | `void` | —                |
+| **Activate**       | —                 | `void` | —                |
