@@ -5,11 +5,11 @@
 | Escenario                            | Entrada               | Resultado Esperado | Verificaciones          |
 | ------------------------------------ | --------------------- | ------------------ | ----------------------- |
 | **Happy Path - Nombre válido**       | "Ortodoncia"          | Name creada        | - Value == "Ortodoncia" |
-| **Error - String vacío**             | ""                    | `DomainException`  | - No se crea            |
-| **Error - Solo espacios**            | "   "                 | `DomainException`  | - No se crea            |
-| **Error - Longitud menor al mínimo** | "A"                   | `DomainException`  | - No se crea            |
-| **Error - Longitud mayor al máximo** | String largo inválido | `DomainException`  | - No se crea            |
-| **Error - Caracteres inválidos**     | "@@@@"                | `DomainException`  | - No se crea            |
+| **Error - String vacío**             | ""                    | `InvalidNameException`  | - No se crea            |
+| **Error - Solo espacios**            | "   "                 | `InvalidNameException`  | - No se crea            |
+| **Error - Longitud menor al mínimo** | "A"                   | `InvalidNameException`  | - No se crea            |
+| **Error - Longitud mayor al máximo** | String largo inválido | `InvalidNameException`  | - No se crea            |
+| **Error - Caracteres inválidos**     | "@@@@"                | `InvalidNameException`  | - No se crea            |
 | **Happy Path - Trim aplicado**       | "  Ortodoncia  "      | Name creada        | - Value == "Ortodoncia" |
 
 ---
