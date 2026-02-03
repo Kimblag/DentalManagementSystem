@@ -3,7 +3,7 @@ using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Domain.Tests.ValueObjectsTests.NameTests
 {
-    public class NameTests
+    public sealed class NameTests
     {
         /* Creation scenario */
 
