@@ -22,4 +22,9 @@
     <ProjectReference Include="..\..\src\DentalSystem.Domain\DentalSystem.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="EntitiesTests\" />
+    <Folder Include="Helpers\" />
+  </ItemGroup>
+
 </Project>
