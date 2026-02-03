@@ -14,4 +14,9 @@
     <ProjectReference Include="..\DentalSystem.Domain\DentalSystem.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Ports\Repositories\" />
+    <Folder Include="UseCases\" />
+  </ItemGroup>
+
 </Project>
