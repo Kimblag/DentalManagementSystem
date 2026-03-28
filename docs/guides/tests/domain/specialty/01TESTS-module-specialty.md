@@ -2,15 +2,13 @@
 
 ## Tests de creación del agregado
 
-### `Specialty.Create`
+### `Specialty`
+La especialidad nace en estado DRAFT, ya que sólo se cre la especialidad, pero aún no se le agrega el tratamiento (es un paso después). Se activa cuando se agrega el tratamiento.
+No se prueba nombres, baseCost, códigos inválidos porque eso es responsabilidad de los VOs.
 
-| Escenario                                              | Entrada                               | Estado Inicial | Resultado Esperado           | Verificaciones                                                                |
-| ------------------------------------------------------ | ------------------------------------- | -------------- | ---------------------------- | ----------------------------------------------------------------------------- |
-| **Happy Path - Crear con un tratamiento**              | Name válido<br>1 `NewTreatmentData`   | —              | Specialty creada             | - IsActive == true<br>- Treatments.Count == 1<br>- Treatment.IsActive == true |
-| **Happy Path - Crear con múltiples tratamientos**      | Name válido<br>2+ `NewTreatmentData`  | —              | Specialty creada             | - Treatments.Count correcto<br>- Todos activos                                |
-| **Error - Lista de tratamientos vacía**                | Name válido<br>Treatments: []         | —              | `EmptyTreatmentList`         | - No se crea el agregado                                                      |
-| **Error - Código duplicado en tratamientos iniciales** | Dos `NewTreatmentData` con mismo Code | —              | `TreatmentCodeAlreadyExists` | - No se crea el agregado                                                      |
-| **Error - Nombre duplicado en tratamientos iniciales** | Dos `NewTreatmentData` con mismo Name | —              | `TreatmentNameAlreadyExists` | - No se crea el agregado                                                      |
+| Escenario                                  | Entrada                                    | Estado Inicial | Resultado Esperado         | Verificaciones                             |
+| ------------------------------------------ | ------------------------------------------ | -------------- | -------------------------- | ------------------------------------------ |
+| **Happy Path - Crear especialidad**        | Name: "Orthodontics", Description: "Test"  | —              | Specialty creada           | Status: Draft. Name, description           |
 
 
 ---
@@ -19,28 +17,29 @@
 
 ### `Rename`
 
-| Escenario                         | Entrada     | Estado Inicial     | Resultado Esperado | Verificaciones     |
-| --------------------------------- | ----------- | ------------------ | ------------------ | ------------------ |
-| **Happy Path - Renombrar activa** | Name válido | Specialty activa   | Éxito              | - Name actualizado |
-| **Error - Renombrar inactiva**    | Name válido | Specialty inactiva | `EntityInactive`   | - Name no cambia   |
+| Escenario                         | Entrada              | Estado Inicial     | Resultado Esperado      | Verificaciones     |
+| --------------------------------- | -------------------- | ------------------ | ----------------------- | ------------------ |
+| **Happy Path - Renombrar activa** | Name: "Endodonthics" | Specialty activa   | Éxito                   | - Name actualizado |
+| **Error - Renombrar archivada**    | Name "Endodonthics"  | Specialty archivada | `DomainRuleException`   | - Name no cambia   |
 
 ---
 
-### `Deactivate`
+### `Archive`
 
-| Escenario                                             | Entrada | Estado Inicial                            | Resultado Esperado | Verificaciones                                                            |
-| ----------------------------------------------------- | ------- | ----------------------------------------- | ------------------ | ------------------------------------------------------------------------- |
-| **Happy Path - Desactivar activa**                    | —       | Specialty activa con tratamientos activos | Éxito              | - Specialty.IsActive == false<br>- Todos los Treatments.IsActive == false |
-| **Happy Path - Desactivar ya inactiva (idempotente)** | —       | Specialty inactiva                        | Éxito              | - Estado no cambia                                                        |
+| Escenario                                              | Entrada | Estado Inicial                            | Resultado Esperado | Verificaciones                                             |
+| ------------------------------------------------------ | ------- | ----------------------------------------- | ------------------ | ---------------------------------------------------------- |
+| **Happy Path - Archivar activa**                       | —       | Specialty activa con tratamientos activos | Éxito              | - Specialty.Status = ARCHIVE- Treatments.Status = ARCHIVED |
+| **Happy Path - Archivar draft**                        | —       | Specialty draft                           | Éxito              | - Specialty.Status = ARCHIVE                               |
+| **Happy Path - Archivar ya archivada (idempotente)**   | —       | Specialty archivada                       | Éxito              | - Estado no cambia                                         |
 
 ---
 
 ### `Activate`
 
-| Escenario                                        | Entrada | Estado Inicial                                | Resultado Esperado | Verificaciones                                                          |
-| ------------------------------------------------ | ------- | --------------------------------------------- | ------------------ | ----------------------------------------------------------------------- |
-| **Happy Path - Activar inactiva**                | —       | Specialty inactiva con tratamientos inactivos | Éxito              | - Specialty.IsActive == true<br>- Todos los Treatments.IsActive == true |
-| **Happy Path - Activar ya activa (idempotente)** | —       | Specialty activa                              | Éxito              | - Sin cambios                                                           |
+| Escenario                                        | Entrada | Estado Inicial                                 | Resultado Esperado | Verificaciones                                              |
+| ------------------------------------------------ | ------- | ---------------------------------------------- | ------------------ | ----------------------------------------------------------- |
+| **Happy Path - Activar ARCHIVED**                | —       | Specialty archivada con tratamientos inactivos | Éxito              | - Specialty.Status = ACTIVE - Treatments.Status = ACTIVE    |
+| **Happy Path - Activar ya activa (idempotente)** | —       | Specialty activa                               | Éxito              | - Sin cambios                                               |
 
 ---
 
@@ -48,75 +47,53 @@
 
 ### `AddTreatment`
 
-| Escenario                            | Entrada                   | Estado Inicial                   | Resultado Esperado           | Verificaciones                                    |
-| ------------------------------------ | ------------------------- | -------------------------------- | ---------------------------- | ------------------------------------------------- |
-| **Happy Path - Agregar tratamiento** | `NewTreatmentData` válido | Specialty activa con 1 treatment | Treatment agregado           | - Treatments.Count +1<br>- Nuevo IsActive == true |
-| **Error - Specialty inactiva**       | `NewTreatmentData` válido | Specialty inactiva               | `EntityInactive`             | - No se agrega                                    |
-| **Error - Código duplicado**         | Code existente            | Specialty activa                 | `TreatmentCodeAlreadyExists` | - No se agrega                                    |
-| **Error - Nombre duplicado**         | Name existente            | Specialty activa                 | `TreatmentNameAlreadyExists` | - No se agrega                                    |
+| Escenario                                    | Entrada                     | Estado Inicial                   | Resultado Esperado                       | Verificaciones                                    |
+| -------------------------------------------- | --------------------------- | -------------------------------- | ---------------------------------------- | ------------------------------------------------- |
+| **Happy Path - Agregar tratamiento inicial** | "01.01", "Cleaning",  20000 | Specialty en estado DRAFT        | Treatment agregado y Specialty activada  | - Treatments.Count = 1, Specialty.Status = ACTIVE |
+| **Happy Path - Agregar tratamiento**         | "01.01", "Cleaning",  20000 | Specialty activa con 1 treatment | Treatment agregado                       | - Treatments.Count +1 - Specialty.Status = Active |
+| **Error - Specialty archivada**               | "01.01", "Cleaning",  20000 | Specialty archivada               | `DomainRuleException`                    | - No se agrega                                    |
+| **Error - Código duplicado**                 | Code existente              | Specialty activa                 | `DomainConflictException`                | - No se agrega                                    |
 
 ---
 
 ### `RenameTreatment`
 
-| Escenario                                     | Entrada                          | Estado Inicial     | Resultado Esperado           | Verificaciones     |
-| --------------------------------------------- | -------------------------------- | ------------------ | ---------------------------- | ------------------ |
-| **Happy Path - Renombrar tratamiento activo** | TreatmentId + Name válido        | Specialty activa   | Éxito                        | - Name actualizado |
-| **Error - Specialty inactiva**                | TreatmentId + Name               | Specialty inactiva | `EntityInactive`             | - Name no cambia   |
-| **Error - Treatment no encontrado**           | TreatmentId inexistente          | Specialty activa   | `TreatmentNotFound`          | - Nada cambia      |
-| **Error - Nombre duplicado**                  | Name ya usado por otro treatment | Specialty activa   | `TreatmentNameAlreadyExists` | - No se renombra   |
+| Escenario                                     | Entrada                          | Estado Inicial      | Resultado Esperado           | Verificaciones     |
+| --------------------------------------------- | -------------------------------- | ------------------- | ---------------------------- | ------------------ |
+| **Happy Path - Renombrar tratamiento activo** | TreatmentCode + Name             | Specialty activa    | Éxito                        | - Name actualizado |
+| **Error - Specialty Archivada**               | TreatmentCode + Name             | Specialty archivada | `DomainRuleException`        | - Name no cambia   |
+| **Error - Treatment no encontrado**           | TreatmentCode inexistente        | Specialty activa    | `DomainNotFoundException`    | - Nada cambia      |
 
 ---
 
 ### `ChangeTreatmentBaseCost`
 
-| Escenario                           | Entrada                    | Estado Inicial     | Resultado Esperado  | Verificaciones         |
-| ----------------------------------- | -------------------------- | ------------------ | ------------------- | ---------------------- |
-| **Happy Path - Cambiar costo**      | TreatmentId + Money válido | Specialty activa   | Éxito               | - BaseCost actualizado |
-| **Error - Specialty inactiva**      | TreatmentId + Money        | Specialty inactiva | `EntityInactive`    | - No se modifica       |
-| **Error - Treatment no encontrado** | TreatmentId inexistente    | Specialty activa   | `TreatmentNotFound` | - No se modifica       |
+| Escenario                           | Entrada                      | Estado Inicial      | Resultado Esperado        | Verificaciones         |
+| ----------------------------------- | ---------------------------- | ------------------- | ------------------------- | ---------------------- |
+| **Happy Path - Cambiar costo**      | TreatmentCode + Money válido | Specialty activa    | Éxito                     | - BaseCost actualizado |
+| **Error - Specialty archivada**      | TreatmentCode + Money        | Specialty archivada | `DomainRuleException`     | - No se modifica       |
+| **Error - Treatment no encontrado** | TreatmentCode inexistente    | Specialty activa    | `DomainNotFoundException` | - No se modifica       |
 
 ---
 
-### `DeactivateTreatment`
+### `ArchiveTreatment`
 
-| Escenario                                             | Entrada                 | Estado Inicial                            | Resultado Esperado          | Verificaciones                |
-| ----------------------------------------------------- | ----------------------- | ----------------------------------------- | --------------------------- | ----------------------------- |
-| **Happy Path - Desactivar treatment**                 | TreatmentId             | Specialty con ≥2 activos                  | Éxito                       | - Treatment.IsActive == false |
-| **Happy Path - Desactivar ya inactivo (idempotente)** | TreatmentId             | Treatment ya inactivo y hay otros activos | Éxito                       | - Sin cambios                 |
-| **Error - Último treatment**                          | TreatmentId             | Specialty con 1 solo activo               | `CannotRemoveLastTreatment` | - Sigue activo                |
-| **Error - Treatment no encontrado**                   | TreatmentId inexistente | Specialty válida                          | `TreatmentNotFound`         | - Nada cambia                 |
+| Escenario                                              | Entrada                   | Estado Inicial                             | Resultado Esperado          | Verificaciones                |
+| ------------------------------------------------------ | ------------------------- | ------------------------------------------ | --------------------------- | ----------------------------- |
+| **Happy Path - Archivar treatment**                    | TreatmentCode             | Specialty con ≥2 activos                   | Éxito                       | - Treatment.Status = ARCHIVED |
+| **Happy Path - Desactivar ya archivado (idempotente)** | TreatmentCode             | Treatment ya archivado y hay otros activos | Éxito                       | - Sin cambios                 |
+| **Error - Último treatment**                           | TreatmentCode             | Specialty con 1 solo activo                | `DomainRuleException`       | - Sigue activo                |
+| **Error - Treatment no encontrado**                    | TreatmentCode inexistente | Specialty válida                           | `DomainNotFoundException`   | - Nada cambia                 |
 
 ---
 
 ### `ActivateTreatment`
 
-| Escenario                                        | Entrada                 | Estado Inicial                       | Resultado Esperado  | Verificaciones               |
-| ------------------------------------------------ | ----------------------- | ------------------------------------ | ------------------- | ---------------------------- |
-| **Happy Path - Activar treatment**               | TreatmentId             | Specialty activa, treatment inactivo | Éxito               | - Treatment.IsActive == true |
-| **Happy Path - Activar ya activo (idempotente)** | TreatmentId             | Treatment activo                     | Éxito               | - Sin cambios                |
-| **Error - Specialty inactiva**                   | TreatmentId             | Specialty inactiva                   | `EntityInactive`    | - No se activa               |
-| **Error - Treatment no encontrado**              | TreatmentId inexistente | Specialty activa                     | `TreatmentNotFound` | - Nada cambia                |
-
----
-
-## Tests directos de `Treatment` (entidad interna)
-
-
-### `Rename`
-
-| Escenario  | Entrada     | Estado Inicial     | Resultado Esperado |
-| ---------- | ----------- | ------------------ | ------------------ |
-| Happy Path | Name válido | Treatment activo   | Name actualizado   |
-| Error      | Name válido | Treatment inactivo | `EntityInactive`   |
-
----
-
-### `ChangeBaseCost`
-
-| Escenario  | Entrada      | Estado Inicial     | Resultado Esperado   |
-| ---------- | ------------ | ------------------ | -------------------- |
-| Happy Path | Money válido | Treatment activo   | BaseCost actualizado |
-| Error      | Money válido | Treatment inactivo | `EntityInactive`     |
+| Escenario                                        | Entrada                   | Estado Inicial                        | Resultado Esperado        | Verificaciones               |
+| ------------------------------------------------ | ------------------------- | ------------------------------------- | ------------------------- | ---------------------------- |
+| **Happy Path - Activar treatment**               | TreatmentCode             | Specialty activa, treatment archivado | Éxito                     | - Treatment.Status = ACTIVE  |
+| **Happy Path - Activar ya activo (idempotente)** | TreatmentCode             | Treatment activo                      | Éxito                     | - Sin cambios                |
+| **Error - Specialty archivada**                   | TreatmentCode             | Specialty archivada                    | `DomainRuleException`     | - No se activa               |
+| **Error - Treatment no encontrado**              | TreatmentCode inexistente | Specialty activa                      | `DomainNotFoundException` | - Nada cambia                |
 
 ---

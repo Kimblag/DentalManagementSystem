@@ -2,13 +2,13 @@
 
 ### Creación
 
-| Escenario                       | Entrada                         | Resultado Esperado | Verificaciones                          |
-| ------------------------------- | ------------------------------- | ------------------ | --------------------------------------- |
-| **Happy Path - Monto positivo** | Amount: 1000<br>Currency: "ARS" | Money creada       | - Amount == 1000<br>- Currency == "ARS" |
-| **Happy Path - Monto cero**     | Amount: 0<br>Currency: "ARS"    | Money creada       | - Amount == 0                           |
-| **Error - Monto negativo**      | Amount: -1<br>Currency: "ARS"   | `DomainException`  | - No se crea                            |
-| **Error - Currency nula**       | Amount: 1000<br>Currency: null  | `DomainException`  | - No se crea                            |
-| **Error - Currency vacía**      | Amount: 1000<br>Currency: ""    | `DomainException`  | - No se crea                            |
+| Escenario                       | Entrada                         | Resultado Esperado            | Verificaciones                          |
+| ------------------------------- | ------------------------------- | ----------------------------- | --------------------------------------- |
+| **Happy Path - Monto positivo** | Amount: 1000<br>Currency: "ARS" | Money creada                  | - Amount == 1000<br>- Currency == "ARS" |
+| **Happy Path - Monto cero**     | Amount: 0<br>Currency: "ARS"    | Money creada                  | - Amount == 0                           |
+| **Error - Monto negativo**      | Amount: -1<br>Currency: "ARS"   | `DomainValidationException`   | - No se crea                            |
+| **Error - Currency nula**       | Amount: 1000<br>Currency: null  | `DomainValidationException`   | - No se crea                            |
+| **Error - Currency vacía**      | Amount: 1000<br>Currency: ""    | `DomainValidationException`   | - No se crea                            |
 
 ---
 

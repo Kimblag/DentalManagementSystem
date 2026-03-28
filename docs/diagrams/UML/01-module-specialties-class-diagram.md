@@ -1,64 +1,70 @@
 # UML Class Diagram – Module 01: Specialties
 
 ## Scope
-Este diagrama representa el Modelo de Dominio para el módulo de Especialidades. Refleja el diseño de agregados y las invariantes de dominio definidas previamente.
+Este diagrama representa el Modelo de Dominio para el módulo de Especialidades. Refleja el diseño de agregados y las invariantes de dominio definidas.
 
 ## UML Diagram mermaid
 ```mermaid
 classDiagram
     direction TB
 
-    class Especialidad {
-        +UUID Id
+    class Specialty {
+        +Guid Id
         +Name Name
-        +bool IsActive
-        -Collection<Tratamiento> Treatments
-
-        +Create(Name, Collection<NewTreatmentData>)
+        +String Description
+        +SpecialtyStatus Status
+        +IReadOnlyCollection~Treatment~ Treatments
+        -List~Treatment~ _treatments
+        +Specialty(Name, String?)
         +Rename(Name)
-        +AddTreatment(NewTreatmentData)
-        +RenameTreatment(UUID, Name)
-        +ChangeTreatmentBaseCost(UUID, Money)
-        +DeactivateTreatment(UUID)
-        +ActivateTreatment(UUID)
-        +Deactivate()
+        +UpdateDescription(String?)
         +Activate()
+        +Archive()
+        +AddTreatment(TreatmentCode, Name, Money, String?)
+        +RenameTreatment(TreatmentCode, Name)
+        +UpdateTreatmentBaseCost(TreatmentCode, Money)
+        +ActivateTreatment(TreatmentCode)
+        +ArchiveTreatment(TreatmentCode)
+        +UpdateTreatmentDescription(TreatmentCode, String?)
+        -EnsureActive()
     }
 
-    class Tratamiento {
-        +UUID Id
-        +string Code
+    class Treatment {
+        +TreatmentCode Code
         +Name Name
         +Money BaseCost
-        +bool IsActive
-
-        -Rename(Name)
-        -ChangeBaseCost(Money)
-        -Deactivate()
-        -Activate()
+        +TreatmentStatus Status
+        +String? Description
+        internal Treatment(TreatmentCode, Name, Money, String?)
+        internal Rename(Name)
+        internal UpdateBaseCost(Money)
+        internal Activate()
+        internal Archive()
+        internal UpdateDescription(String?)
     }
 
     class Name {
-        +string Value
+        <<valueObject>>
+        +String Value
     }
 
     class Money {
-        +decimal Amount
-        +string Currency
+        <<valueObject>>
+        +Decimal Amount
+        +String Currency
     }
 
-    class NewTreatmentData {
-        +string Code
-        +Name Name
-        +Money BaseCost
+    class TreatmentCode {
+        <<valueObject>>
+        +String Value
     }
 
-    %% Relaciones
-    Especialidad "1" *-- "1..*" Tratamiento : contiene
-    Especialidad --> Name
-    Especialidad --> NewTreatmentData
-    Tratamiento --> Name
-    Tratamiento --> Money
-    NewTreatmentData --> Name
-    NewTreatmentData --> Money
+    %% Relaciones de Agregado
+    Specialty "1" *-- "0..*" Treatment : Aggregate Root
+
+    %% Relaciones con Value Objects
+    Specialty ..> Name
+    Treatment ..> Name
+    Treatment ..> Money
+    Treatment ..> TreatmentCode
 ```
