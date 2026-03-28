@@ -1,6 +1,0 @@
-@DentalSystem.Api_HostAddress = http://localhost:5135
-
-GET {{DentalSystem.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
