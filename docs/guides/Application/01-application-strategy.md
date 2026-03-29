@@ -1,8 +1,5 @@
 # Data Transfer Objects (DTOs) - Specialty
 
-**Contexto:** Estos son los objetos de transporte de datos que Aplicación usará para comunicarse con el exterior (Controladores/API). Se dividen en DTOs de Entrada (Requests) que incluyen las validaciones estructurales básicas, y DTOs de Salida (Responses) para lectura.
-# Data Transfer Objects (DTOs) - Specialty
-
 **Contexto:** Estos son los objetos de transporte de datos utilizados por la capa de Aplicación para comunicarse con el exterior (Controladores/API). Se dividen en DTOs de Entrada (Requests) que incluyen las validaciones estructurales básicas, y DTOs de Salida (Responses) para lectura. Todos se implementan como `records` posicionales inmutables.
 
 ## 1. DTOs de Entrada (Input / Requests)
@@ -58,6 +55,26 @@ Contratos para acceder y modificar las Entidades Raíz (Agregados). Operan exclu
 | | `UpdateAsync` | `Specialty specialty` | `Task` | Marca la entidad existente (o sus colecciones internas modificadas) para ser actualizada en la base de datos. |
 
 
+### Implementación de Repositorio - `SpecialtyRepository`
+
+**Contexto:** Se detalla la implementación concreta del contrato `ISpecialtyRepository` dentro de la capa de Infraestructura. Esta clase encapsula la interacción con la base de datos utilizando Entity Framework Core. Su responsabilidad exclusiva es traducir las necesidades de la capa de Aplicación en consultas y comandos compatibles con el motor relacional.
+
+## Dependencias Inyectadas
+- **`ApplicationDbContext`**: El contexto de datos configurado de Entity Framework Core. Se utiliza para acceder a los `DbSet` y al `ChangeTracker`.
+
+## Mapeo de Operaciones
+
+| Método del Contrato | Parámetros Recibidos | Retorno | Detalles de Implementación Técnica (EF Core) |
+| :--- | :--- | :--- | :--- |
+| **`GetByIdAsync`** | `Guid id` | `Task<Specialty?>` | Ejecuta `FirstOrDefaultAsync(s => s.Id == id)`. Aplica obligatoriamente `.Include(s => s.Treatments)` para cargar (hidratar) el Agregado Raíz junto con todas sus entidades hijas desde la base de datos. |
+| **`ExistsByNameAsync`** | `string name` | `Task<bool>` | Ejecuta `AnyAsync(s => s.Name == name)`. Realiza una consulta escalar optimizada que retorna un booleano sin cargar la entidad en memoria, ideal para validaciones de unicidad. |
+| **`ExistsTreatmentCodeAsync`**| `string code` | `Task<bool>` | Ejecuta `SelectMany(s => s.Treatments).AnyAsync(t => t.Code == code)`. Busca de forma global en la colección de tratamientos anidados para garantizar que el código del hijo no se repita en ninguna otra especialidad. |
+| **`AddAsync`** | `Specialty specialty` | `Task` | Invoca `_context.Specialties.Add(specialty)`. Únicamente registra la entidad con estado `Added` en el rastreador de cambios (*ChangeTracker*). Retorna `Task.CompletedTask`. |
+| **`UpdateAsync`** | `Specialty specialty` | `Task` | Invoca `_context.Specialties.Update(specialty)`. Marca la entidad raíz y cualquier cambio detectado en su colección de tratamientos con estado `Modified`. Retorna `Task.CompletedTask`. |
+
+---
+
+> Ninguno de los métodos que alteran el estado (`AddAsync`, `UpdateAsync`) invoca internamente el método `SaveChangesAsync()`. La confirmación de la transacción hacia el servidor SQL está estrictamente reservada para la interfaz `IUnitOfWork` orquestada desde la capa de Aplicación.
 
 ---
 
@@ -94,3 +111,4 @@ public static class SpecialtyMapper
         };
     }
 }
+

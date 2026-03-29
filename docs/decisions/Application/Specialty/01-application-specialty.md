@@ -23,7 +23,7 @@ NUNCA devolver Entidades de Dominio (Specialty, Treatment) directamente hacia af
 ### Interfaces (Los Contratos / Puertos)
 Aquí se define qué necesita la capa del mundo exterior para poder trabajar.
 
-Repositorios (ISpecialtyRepository): NeSe necesita una interfaz que prometa métodos como GetByIdAsync, AddAsync, UpdateAsync. En este caso, se agregará a Application en lugar de crearlos en el dominio, donde suele agregarse a veces.
+Repositorios (ISpecialtyRepository): necesita una interfaz que prometa métodos como GetByIdAsync, AddAsync, UpdateAsync. En este caso, se agregará a Application en lugar de crearlos en el dominio, donde suele agregarse a veces.
 
 Unidad de Trabajo (IUnitOfWork): Un contrato opcional pero recomendado para manejar transacciones y hacer el SaveChangesAsync() centralizado. Esto se hace para evitar acoplar Application a la capa de base de datos. 
 
