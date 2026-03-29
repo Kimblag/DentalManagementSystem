@@ -27,9 +27,11 @@ namespace DentalSystem.Domain.Aggregates.Specialty
         // constructor público para creación
         public Specialty(Name name, string? description = null)
         {
+            ValidateDescription(description);
+
             Id = Guid.NewGuid();
             Name = name;
-            if (description is not null) Description = description;
+            Description = description;
             Status = SpecialtyStatus.DRAFT; // inicia en draft hasta que se le agregue un tratamiento y se active
         }
 
@@ -48,6 +50,7 @@ namespace DentalSystem.Domain.Aggregates.Specialty
         public void UpdateDescription(string? newDescription = null)
         {
             EnsureActive();
+            ValidateDescription(newDescription);
 
             // puede ser un valor nulo o una cadena, no hace falta validar.
             Description = newDescription;
@@ -175,7 +178,7 @@ namespace DentalSystem.Domain.Aggregates.Specialty
             // validar si el tratamiento está archivado: NO debe dejar modificar
             if (treatmentToUpdate.Status == TreatmentStatus.ARCHIVED)
                 throw new DomainRuleException("Cannot modify an archived treatment.");
-
+            ValidateDescription(newDescription);
             treatmentToUpdate.UpdateDescription(newDescription);
         }
 
@@ -185,6 +188,13 @@ namespace DentalSystem.Domain.Aggregates.Specialty
             // Validar si está archivada: no debe permitir modificar
             if (Status == SpecialtyStatus.ARCHIVED)
                 throw new DomainRuleException("Cannot modify an archived specialty.");
+        }
+
+        private void ValidateDescription(string? description = null)
+        {
+            if (description is not null && description.Length > 250)
+                throw new DomainValidationException("The description must have a maximum of 250 characters.");
+
         }
     }
 }
