@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalSystem.Domain.Tests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalSystem.Infrastructure", "src\DentalSystem.Infrastructure\DentalSystem.Infrastructure.csproj", "{76633139-6D22-4096-83AF-FAF4A92D0770}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalSystem.Application", "src\DentalSystem.Application\DentalSystem.Application.csproj", "{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,18 @@ Global
 		{76633139-6D22-4096-83AF-FAF4A92D0770}.Release|x64.Build.0 = Release|Any CPU
 		{76633139-6D22-4096-83AF-FAF4A92D0770}.Release|x86.ActiveCfg = Release|Any CPU
 		{76633139-6D22-4096-83AF-FAF4A92D0770}.Release|x86.Build.0 = Release|Any CPU
+		{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE}.Debug|x64.Build.0 = Debug|Any CPU
+		{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE}.Debug|x86.Build.0 = Debug|Any CPU
+		{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE}.Release|x64.ActiveCfg = Release|Any CPU
+		{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE}.Release|x64.Build.0 = Release|Any CPU
+		{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE}.Release|x86.ActiveCfg = Release|Any CPU
+		{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +81,7 @@ Global
 		{62B0852C-A49F-443B-AC78-AF8EB9B80C05} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{26BC4A9B-EBAD-4BA7-A7D4-7881418AF142} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{76633139-6D22-4096-83AF-FAF4A92D0770} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{37AD7B33-3D94-4702-BDDC-B8ED1629EBCE} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2CED925D-DB0F-4E91-A65B-37CB4078B619}

@@ -57,6 +57,15 @@ namespace DentalSystem.Infrastructure.Persistence.Configurations
                 .HasMaxLength(3)
                 .IsRequired();
             });
+
+            /* Shadow properties */
+            builder.Property<DateTime>("CreatedAt")
+                .HasColumnType("datetime2")
+                .IsRequired();
+
+            builder.Property<DateTime>("UpdatedAt")
+                .HasColumnType("datetime2")
+                .IsRequired(false);
         }
     }
 }

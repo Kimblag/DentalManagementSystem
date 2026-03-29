@@ -33,11 +33,22 @@ namespace DentalSystem.Infrastructure.Persistence.Configurations
                 .HasMaxLength(20)
                 .IsRequired();
 
+
             // mapear la lista: Metadata y SetPropertyAccesMode le dice a EF
             // que le doy acceso VIP para que lea mi lista interna _treatments
             builder.Metadata
                 .FindNavigation(nameof(Specialty.Treatments))!
                 .SetPropertyAccessMode(PropertyAccessMode.Field);
+
+
+            /* Shadow properties */
+            builder.Property<DateTime>("CreatedAt")
+                .HasColumnType("datetime2")
+                .IsRequired();
+     
+            builder.Property<DateTime>("UpdatedAt")
+                .HasColumnType("datetime2")
+                .IsRequired(false);
 
 
             /* Relations */
