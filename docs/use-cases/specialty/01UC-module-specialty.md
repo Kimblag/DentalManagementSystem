@@ -13,5 +13,9 @@
 | **`UpdateTreatmentBaseCost`** | Cambia el precio y moneda de un tratamiento. | `SpecialtyId` (Guid), `TreatmentCode` (string), `Amount` (decimal), `Currency` (string) | `SpecialtyResponse` | `ApplicationNotFoundException` | Sí |
 | **`ArchiveTreatment`** | Archiva un tratamiento específico. | `SpecialtyId` (Guid), `TreatmentCode` (string) | `SpecialtyResponse` | `ApplicationNotFoundException` | Sí |
 | **`ActivateTreatment`** | Reactiva un tratamiento específico. | `SpecialtyId` (Guid), `TreatmentCode` (string) | `SpecialtyResponse` | `ApplicationNotFoundException` | Sí |
+| **`GetSpecialtyById`** | Recupera el detalle completo de una especialidad y sus tratamientos. | `Id` (Guid) | `SpecialtyResponse` | `ApplicationNotFoundException` | Sí |
+| **`GetSpecialties`** | Obtiene el listado general de especialidades. | `Status` (string?) | `List<SpecialtyResponse>` | Ninguna | Sí |
+| **`RemoveTreatment`** | Elimina físicamente un tratamiento de la especialidad (corrección de errores). | `SpecialtyId` (Guid), `TreatmentCode` (string) | `SpecialtyResponse` | `ApplicationNotFoundException` | Sí |
+
 
 ---
