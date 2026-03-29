@@ -58,14 +58,16 @@ namespace DentalSystem.Infrastructure.Persistence.Configurations
                 .IsRequired();
             });
 
+            builder.Property(t => t.CreatedAt)
+               .HasColumnName("CreatedAt")
+               .HasColumnType("datetime2")
+               .IsRequired();
+
             /* Shadow properties */
-            builder.Property<DateTime>("CreatedAt")
-                .HasColumnType("datetime2")
-                .IsRequired();
 
             builder.Property<DateTime>("UpdatedAt")
                 .HasColumnType("datetime2")
-                .IsRequired(false);
+                .IsRequired();
         }
     }
 }

@@ -32,16 +32,6 @@ namespace DentalSystem.Infrastructure.Persistence
             // Se itera sobre todas las entidades que están siendo rastreadas y que han sido modificadas o agregadas
             foreach (var entry in ChangeTracker.Entries())
             {
-                // Si la entidad es nueva (INSERT)
-                if (entry.State == EntityState.Added)
-                {
-                    // Se verifica si la entidad tiene configurada la Shadow Property "CreatedAt"
-                    if (entry.Metadata.FindProperty("CreatedAt") != null)
-                    {
-                        entry.Property("CreatedAt").CurrentValue = DateTime.UtcNow;
-                    }
-                }
-
                 // Si la entidad fue modificada (UPDATE)
                 if (entry.State == EntityState.Modified)
                 {

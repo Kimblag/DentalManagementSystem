@@ -37,6 +37,10 @@ namespace DentalSystem.Infrastructure.Persistence.Configurations
                 .HasMaxLength(20)
                 .IsRequired();
 
+            builder.Property(s => s.CreatedAt)
+                .HasColumnName("CreatedAt")
+                .HasColumnType("datetime2")
+                .IsRequired();
 
             // mapear la lista: Metadata y SetPropertyAccesMode le dice a EF
             // que le doy acceso VIP para que lea mi lista interna _treatments
@@ -46,13 +50,10 @@ namespace DentalSystem.Infrastructure.Persistence.Configurations
 
 
             /* Shadow properties */
-            builder.Property<DateTime>("CreatedAt")
-                .HasColumnType("datetime2")
-                .IsRequired();
 
             builder.Property<DateTime>("UpdatedAt")
                 .HasColumnType("datetime2")
-                .IsRequired(false);
+                .IsRequired();
 
 
             /* Relations */
