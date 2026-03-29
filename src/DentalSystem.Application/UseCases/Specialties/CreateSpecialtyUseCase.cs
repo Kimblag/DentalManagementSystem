@@ -9,21 +9,21 @@ using DentalSystem.Domain.ValueObjects;
 
 namespace DentalSystem.Application.UseCases.Specialties
 {
-    public sealed class CreateSpecialty(ISpecialtyRepository repository, IUnitOfWork unitOfWork)
+    public sealed class CreateSpecialtyUseCase(ISpecialtyRepository repository, IUnitOfWork unitOfWork)
     {
         private readonly ISpecialtyRepository _repository = repository;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<SpecialtyResponse> HandleAsync(CreateSpecialtyRequest request)
         {
+            // VOs
+            Name name = new(request.Name);
 
             // check if specialty already exists
-            bool nameExists = await _repository.ExistsByNameAsync(request.Name);
+            bool nameExists = await _repository.ExistsByNameAsync(name);
             if (nameExists) throw new ApplicationConflictException($"A specialty with the name {request.Name} already exists");
 
             // construir la specialty
-            // VOs
-            Name name = new(request.Name);
             Specialty specialty = new(name, request.Description);
 
             // persistir

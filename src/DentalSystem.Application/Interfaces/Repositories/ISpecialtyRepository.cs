@@ -1,4 +1,6 @@
 ﻿using DentalSystem.Domain.Aggregates.Specialty;
+using DentalSystem.Domain.ValueObjects;
+using DentalSystem.Domain.ValueObjects.Specialty;
 
 namespace DentalSystem.Application.Interfaces.Repositories
 {
@@ -6,9 +8,9 @@ namespace DentalSystem.Application.Interfaces.Repositories
     {
         Task<Specialty?> GetByIdAsync(Guid id);
 
-        Task<bool> ExistsByNameAsync(string name);
+        Task<bool> ExistsByNameAsync(Name name);
 
-        Task<bool> ExistsTreatmentCodeAsync(string code);
+        Task<bool> ExistsTreatmentCodeAsync(TreatmentCode code);
 
         Task AddAsync(Specialty specialty);
 

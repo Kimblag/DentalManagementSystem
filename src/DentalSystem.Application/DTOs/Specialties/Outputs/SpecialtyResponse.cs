@@ -5,7 +5,8 @@
         string Name,
         string? Description,
         string Status,
-        IReadOnlyCollection<TreatmentResponse> Treatments
+        IReadOnlyCollection<TreatmentResponse> Treatments,
+        DateTime CreatedAt
         )
     {
     }

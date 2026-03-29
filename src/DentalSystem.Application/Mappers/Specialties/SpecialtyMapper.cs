@@ -12,7 +12,8 @@ namespace DentalSystem.Application.Mappers.Specialties
                 specialty.Name.Value,
                 specialty.Description,
                 specialty.Status.ToString(),
-                [.. specialty.Treatments.Select(t => t.ToDto())]
+                [.. specialty.Treatments.Select(t => t.ToDto())],
+                specialty.CreatedAt
                 );
         }
     }
