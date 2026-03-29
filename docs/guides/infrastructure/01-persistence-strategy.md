@@ -1,4 +1,4 @@
-# ADR 03: Estrategia de Persistencia y Portabilidad de Base de Datos
+# ADR 01: Estrategia de Persistencia y Portabilidad de Base de Datos
 
 ## Contexto
 El sistema requiere persistir datos de especialidades y tratamientos. Se evalúa la necesidad de soportar múltiples motores de base de datos (SQL Server y MySQL) para evitar el acoplamiento a un proveedor específico (*Vendor Lock-in*).
