@@ -16,6 +16,7 @@ namespace DentalSystem.Domain.Aggregates.Specialty
         // opto por el uso de dos campos: uno privado para tener la data real, uno público para exponer la data de forma segura
         private readonly List<Treatment> _treatments = new();
         public IReadOnlyCollection<Treatment> Treatments => _treatments.AsReadOnly();
+        public DateTime CreatedAt { get; private set; }
 
 
         // constructor vacío EF Core

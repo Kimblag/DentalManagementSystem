@@ -10,6 +10,7 @@ namespace DentalSystem.Domain.Aggregates.Specialty
         public Name Name { get; private set; } = null!;
         public Money BaseCost { get; private set; } = null!;
         public TreatmentStatus Status { get; private set; } // ACTIVE - ARCHIVED
+        public DateTime CreatedAt { get; private set; }
 
         public string? Description { get; private set; }
 
