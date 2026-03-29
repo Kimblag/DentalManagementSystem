@@ -23,6 +23,10 @@ namespace DentalSystem.Infrastructure.Persistence.Configurations
                 .HasMaxLength(100)
                 .IsRequired();
 
+            // definir la columna name como única.
+            builder.HasIndex(s => s.Name)
+                .IsUnique();
+
             builder.Property(s => s.Description)
                 .HasColumnName("Description")
                 .HasMaxLength(250);
@@ -45,7 +49,7 @@ namespace DentalSystem.Infrastructure.Persistence.Configurations
             builder.Property<DateTime>("CreatedAt")
                 .HasColumnType("datetime2")
                 .IsRequired();
-     
+
             builder.Property<DateTime>("UpdatedAt")
                 .HasColumnType("datetime2")
                 .IsRequired(false);

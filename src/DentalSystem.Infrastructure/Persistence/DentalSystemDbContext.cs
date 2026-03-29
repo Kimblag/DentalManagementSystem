@@ -1,9 +1,10 @@
-﻿using DentalSystem.Domain.Aggregates.Specialty;
+﻿using DentalSystem.Application.Interfaces;
+using DentalSystem.Domain.Aggregates.Specialty;
 using Microsoft.EntityFrameworkCore;
 
 namespace DentalSystem.Infrastructure.Persistence
 {
-    public class DentalSystemDbContext : DbContext
+    public class DentalSystemDbContext : DbContext, IUnitOfWork
     {
         // no setear Treatment porque es un agregado
         public DbSet<Specialty> Specialties { get; set; }
