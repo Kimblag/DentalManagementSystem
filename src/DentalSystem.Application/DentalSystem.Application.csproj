@@ -7,9 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="Mappers\" />
     <Folder Include="UseCases\Specialty\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DentalSystem.Domain\DentalSystem.Domain.csproj" />
   </ItemGroup>
 
 </Project>
