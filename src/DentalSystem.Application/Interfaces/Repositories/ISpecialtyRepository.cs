@@ -4,7 +4,7 @@ namespace DentalSystem.Application.Interfaces.Repositories
 {
     public interface ISpecialtyRepository
     {
-        Task<ISpecialtyRepository?> GetByIdAsync(Guid id);
+        Task<Specialty?> GetByIdAsync(Guid id);
 
         Task<bool> ExistsByNameAsync(string name);
 

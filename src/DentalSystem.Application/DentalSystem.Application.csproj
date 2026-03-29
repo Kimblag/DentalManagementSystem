@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="UseCases\Specialty\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DentalSystem.Domain\DentalSystem.Domain.csproj" />
   </ItemGroup>
 
